@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-final ThemeData kLightTheme = _buildLightTheme();
+ThemeData kLightTheme(double fontSize) => buildLightTheme(fontSize);
 
-ThemeData _buildLightTheme() {
+ThemeData buildLightTheme(double fontSize) {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
     primaryColor: Colors.white,
@@ -14,24 +14,24 @@ ThemeData _buildLightTheme() {
           fontFamily: 'Sans',
           fontWeight: FontWeight.normal,
           color: Colors.black,
-          fontSize: 12),
+          fontSize: fontSize),
       body1: TextStyle(
           fontFamily: 'Sans',
           fontWeight: FontWeight.bold,
           color: Colors.black,
-          fontSize: 12),
+          fontSize: fontSize),
       body2: TextStyle(
           fontFamily: 'Sans',
           fontWeight: FontWeight.bold,
           color: Colors.black,
-          fontSize: 10),
+          fontSize: fontSize - 2.0),
     ),
   );
 }
 
-final ThemeData kDarkTheme = _buildDarkTheme();
+ThemeData kDarkTheme(double fontSize) => buildDarkTheme(fontSize);
 
-ThemeData _buildDarkTheme() {
+ThemeData buildDarkTheme(double fontSize) {
   final ThemeData base = ThemeData.dark();
   return base.copyWith(
     primaryColor: Color(0xff323639),
@@ -41,19 +41,19 @@ ThemeData _buildDarkTheme() {
     textTheme: TextTheme(
       headline: TextStyle(
           fontFamily: 'Sans',
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.normal,
           color: Colors.white,
-          fontSize: 12),
+          fontSize: fontSize),
       body1: TextStyle(
           fontFamily: 'Sans',
           fontWeight: FontWeight.bold,
           color: Colors.white,
-          fontSize: 12),
+          fontSize: fontSize),
       body2: TextStyle(
           fontFamily: 'Sans',
           fontWeight: FontWeight.bold,
           color: Colors.white,
-          fontSize: 10),
+          fontSize: fontSize - 2.0),
     ),
   );
 }

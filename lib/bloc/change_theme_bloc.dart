@@ -4,25 +4,31 @@ import 'change_theme_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangeThemeBloc extends Bloc<ChangeThemeEvent, ChangeThemeState> {
-  void onLightThemeChange() => dispatch(LightTheme());
-  void onDarkThemeChange() => dispatch(DarkTheme());
+  double fontSize = 10.0;
+
+  void onLightThemeChange(double fontSize) =>
+      {dispatch(LightTheme()), this.fontSize = fontSize};
+
+  void onDarkThemeChange(double fontSize) =>
+      {dispatch(DarkTheme()), this.fontSize = fontSize};
 
   void onDecideThemeChange() => dispatch(DecideTheme());
+
   @override
-  ChangeThemeState get initialState => ChangeThemeState.lightTheme();
+  ChangeThemeState get initialState => ChangeThemeState.lightTheme(fontSize);
 
   @override
   Stream<ChangeThemeState> mapEventToState(ChangeThemeEvent event) async* {
     if (event is DecideTheme) {
       final int optionValue = await getOption();
       if (optionValue == 0) {
-        yield ChangeThemeState.lightTheme();
+        yield ChangeThemeState.lightTheme(fontSize);
       } else if (optionValue == 1) {
-        yield ChangeThemeState.darkTheme();
+        yield ChangeThemeState.darkTheme(fontSize);
       }
     }
     if (event is LightTheme) {
-      yield ChangeThemeState.lightTheme();
+      yield ChangeThemeState.lightTheme(fontSize);
       try {
         _saveOptionValue(0);
       } catch (_) {
@@ -31,15 +37,13 @@ class ChangeThemeBloc extends Bloc<ChangeThemeEvent, ChangeThemeState> {
     }
 
     if (event is DarkTheme) {
-      yield ChangeThemeState.darkTheme();
+      yield ChangeThemeState.darkTheme(fontSize);
       try {
         _saveOptionValue(1);
       } catch (_) {
         throw Exception("Could not persist change");
       }
     }
-
-
   }
 
   Future<Null> _saveOptionValue(int optionValue) async {

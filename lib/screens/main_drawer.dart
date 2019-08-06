@@ -32,107 +32,110 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.white,
       child: SafeArea(
-        child: SingleChildScrollView(
-          child: new Container(
-            color: Colors.white,
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: new IconButton(
-                    onPressed: widget.onTap,
-                    icon: Icon(Icons.close),
-                  ),
-                ),
-
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: 70,
-                              height: 70,
-                              child: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("Muhammad"),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("abualgaitad@gmail.com"),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
+        child: Container(
+          child: SingleChildScrollView(
+            child: new Container(
+              color: Colors.white,
+              child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: new IconButton(
+                      onPressed: widget.onTap,
+                      icon: Icon(Icons.close),
                     ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  ),
+
+                  Row(
                     children: <Widget>[
-                      Column(
-                        children: <Widget>[Text("129"), Text("Questions")],
+                      Expanded(
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 70,
+                                height: 70,
+                                child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")),
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Text("Muhammad"),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Text("abualgaitad@gmail.com"),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      Column(
-                        children: <Widget>[Text("98%"), Text("Accurate")],
-                      ),
-                      Column(
-                        children: <Widget>[Text("450"), Text("Answers")],
-                      )
                     ],
                   ),
-                ),
-                new Divider(),
-                Column(
-                  children: <Widget>[
-                    menuRow(0,_menuGridICons,_menuGridTitles),
-                    menuRow(2,_menuGridICons,_menuGridTitles),
-                    menuRow(4,_menuGridICons,_menuGridTitles),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[Text("129"), Text("Questions")],
+                        ),
+                        Column(
+                          children: <Widget>[Text("98%"), Text("Accurate")],
+                        ),
+                        Column(
+                          children: <Widget>[Text("450"), Text("Answers")],
+                        )
+                      ],
+                    ),
+                  ),
+                  new Divider(),
+                  Column(
+                    children: <Widget>[
+                      menuRow(0, _menuGridICons, _menuGridTitles),
+                      menuRow(2, _menuGridICons, _menuGridTitles),
+                      menuRow(4, _menuGridICons, _menuGridTitles),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                          //invite a friend and get 100 points
+                          child: buildFlatButtonWidget(Colors.redAccent,
+                              "invite a friend and get 100 points")),
+                    ],
+                  ),
+                  //have an idea, great talk to us
+                  Row(children: <Widget>[
                     Expanded(
-                        //invite a friend and get 100 points
-                        child: buildFlatButtonWidget(Colors.redAccent,
-                            "invite a friend and get 100 points")),
-                  ],
-                ),
-                //have an idea, great talk to us
-                Row(children: <Widget>[
-                  Expanded(
-                      child: buildFlatButtonWidget(Colors.deepPurpleAccent,
-                          "have an idea, great talk to us")),
-                ]),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text("ver 1.0"),
-                      IconButton(
-                        onPressed: null,
-                        icon: Icon(Icons.exit_to_app),
-                      )
-                    ],
-                  ),
-                )
-              ],
+                        child: buildFlatButtonWidget(Colors.deepPurpleAccent,
+                            "have an idea, great talk to us")),
+                  ]),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text("ver 1.0"),
+                        IconButton(
+                          onPressed: null,
+                          icon: Icon(Icons.exit_to_app),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

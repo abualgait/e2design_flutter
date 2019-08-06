@@ -37,6 +37,23 @@ Widget buildFlatButtonWidget(Color color, String txt) {
   );
 }
 
+Widget buildOutlinedButtonWidget(Color btn_color, Color txt_color, String txt) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 5.0, left: 5.0, right: 5.0),
+    child: OutlineButton(
+      color: btn_color,
+      shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(5.0)),
+      onPressed: () {},
+      textColor: txt_color,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Text(txt),
+      ),
+    ),
+  );
+}
+
 Widget menuRow(int index, var iconsArray, var textArray) {
   return Row(
     children: <Widget>[

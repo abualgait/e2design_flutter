@@ -6,7 +6,7 @@ class BaseRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
 
   Future<List<Post>> fetchPostList() async {
-    final response = await _helper.get("5d3823a39f000059009b3c22");
+    final response = await _helper.get("5d4953c03200008942600b31");
     return PostResponse.fromJson(response).results;
   }
 

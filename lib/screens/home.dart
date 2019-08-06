@@ -1,10 +1,13 @@
 import 'package:e2_design/base_classes/shaerd_prefs_helper.dart';
 import 'package:e2_design/bloc/change_theme_bloc.dart';
 import 'package:e2_design/bloc/change_theme_state.dart';
+import 'package:e2_design/bloc/utils.dart';
 import 'package:e2_design/language_manager/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'add_post_page.dart';
 import 'main_drawer.dart';
 import 'main_page.dart';
 import 'notification_page.dart';
@@ -21,10 +24,13 @@ class _HomePageState extends State<HomePage>
   int _showMenuIndex = 0;
   Animation<double> animation;
   AnimationController controller;
+  var sliderValue = 10.0;
+  int option;
 
   @override
   void initState() {
     super.initState();
+    //changeThemeBloc.onLightThemeChange(10.0);
     controller = AnimationController(
         duration: const Duration(milliseconds: 200), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
@@ -55,7 +61,7 @@ class _HomePageState extends State<HomePage>
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context).translate('app_title'),
-                       //"E2 Design",
+                        //"E2 Design",
                         style: state.themeData.textTheme.headline,
                       )
                     ],
@@ -71,7 +77,6 @@ class _HomePageState extends State<HomePage>
                       child: IconButton(
                         icon: Icon(Icons.notifications),
                         onPressed: () {
-
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -84,14 +89,41 @@ class _HomePageState extends State<HomePage>
                 ),
                 body: Container(
                   color: state.themeData.primaryColor,
-                  child: PageView(
-                      physics: BouncingScrollPhysics(),
-                      controller: pageController,
-                      onPageChanged: onPageChanged,
-                      children: <Widget>[MainBody()]),
+                  child:
+//                  Slider(
+//                    min: 10.0,
+//                    max: 35.0,
+//                    divisions: 5,
+//                    value: sliderValue,
+//                    activeColor: Color(0xff512ea8),
+//                    inactiveColor: Color(0xffac9bcc),
+//                    onChanged: (newValue) async {
+//                      SharedPreferences preferences =
+//                          await SharedPreferences.getInstance();
+//                      option = preferences.get('theme_option') ?? 0;
+//                      setState(() {
+//                        sliderValue = newValue;
+//                        if (option == 0) {
+//                          changeThemeBloc.onLightThemeChange(sliderValue);
+//                        } else {
+//                          changeThemeBloc.onDarkThemeChange(sliderValue);
+//                        }
+//                      });
+//                    },
+//                  ),
+                      PageView(
+                          physics: BouncingScrollPhysics(),
+                          controller: pageController,
+                          onPageChanged: onPageChanged,
+                          children: <Widget>[MainBody()]),
                 ),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddPostPage()),
+                    );
+                  },
                   child: Icon(Icons.add),
                 ),
               ),

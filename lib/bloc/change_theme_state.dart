@@ -6,13 +6,12 @@ class ChangeThemeState {
 
   ChangeThemeState({@required this.themeData});
 
-  factory ChangeThemeState.lightTheme() {
-    return ChangeThemeState(themeData: kLightTheme);
+  factory ChangeThemeState.lightTheme(double fontSize) {
+
+    return ChangeThemeState(themeData: kLightTheme(fontSize));
   }
 
-  factory ChangeThemeState.darkTheme() {
-    return ChangeThemeState(themeData: kDarkTheme);
+  factory ChangeThemeState.darkTheme(double fontSize) {
+    return ChangeThemeState(themeData: kDarkTheme(fontSize));
   }
-
-
 }
