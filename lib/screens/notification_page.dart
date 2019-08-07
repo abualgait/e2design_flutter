@@ -1,6 +1,7 @@
 import 'package:e2_design/base_widgets/base_network_widgets.dart';
 import 'package:e2_design/bloc/change_theme_bloc.dart';
 import 'package:e2_design/bloc/change_theme_state.dart';
+import 'package:e2_design/language_manager/AppLocalizations.dart';
 import 'package:e2_design/models/notifications_response.dart';
 import 'package:e2_design/network_manager/api_response.dart';
 import 'package:e2_design/network_manager/network_blocs/notification_bloc.dart';
@@ -33,7 +34,7 @@ class _NotificationPageState extends State<NotificationPage> {
             child: Scaffold(
               appBar: buildMainAppBar(
                   context,
-                  "Notifications",
+                  AppLocalizations.of(context).translate('app_notification'),
                   state.themeData.textTheme.headline,
                   state.themeData.primaryColor),
               backgroundColor: Colors.white10,

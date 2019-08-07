@@ -1,8 +1,18 @@
+import 'package:e2_design/base_classes/shaerd_prefs_helper.dart';
 import 'package:flutter/material.dart';
 
 ThemeData kLightTheme(double fontSize) => buildLightTheme(fontSize);
+var fontFamilty = "GoogleSans";
 
 ThemeData buildLightTheme(double fontSize) {
+  SharedPreferencesHelper.getLanguageCode().then((onValue) {
+    if (onValue == "en") {
+      fontFamilty = "GoogleSans";
+    } else {
+      fontFamilty = "GE";
+    }
+  });
+
   final ThemeData base = ThemeData.light();
   return base.copyWith(
     primaryColor: Colors.white,
@@ -11,17 +21,17 @@ ThemeData buildLightTheme(double fontSize) {
     primaryIconTheme: IconThemeData(color: Colors.black),
     textTheme: TextTheme(
       headline: TextStyle(
-          fontFamily: 'Sans',
+          fontFamily: fontFamilty,
           fontWeight: FontWeight.normal,
           color: Colors.black,
           fontSize: fontSize),
       body1: TextStyle(
-          fontFamily: 'Sans',
+          fontFamily: fontFamilty,
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontSize: fontSize),
       body2: TextStyle(
-          fontFamily: 'Sans',
+          fontFamily: fontFamilty,
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontSize: fontSize - 2.0),
@@ -32,6 +42,13 @@ ThemeData buildLightTheme(double fontSize) {
 ThemeData kDarkTheme(double fontSize) => buildDarkTheme(fontSize);
 
 ThemeData buildDarkTheme(double fontSize) {
+  SharedPreferencesHelper.getLanguageCode().then((onValue) {
+    if (onValue == "en") {
+      fontFamilty = "GoogleSans";
+    } else {
+      fontFamilty = "Sans";
+    }
+  });
   final ThemeData base = ThemeData.dark();
   return base.copyWith(
     primaryColor: Color(0xff323639),
@@ -40,17 +57,17 @@ ThemeData buildDarkTheme(double fontSize) {
     primaryIconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(
       headline: TextStyle(
-          fontFamily: 'Sans',
+          fontFamily: fontFamilty,
           fontWeight: FontWeight.normal,
           color: Colors.white,
           fontSize: fontSize),
       body1: TextStyle(
-          fontFamily: 'Sans',
+          fontFamily: fontFamilty,
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontSize: fontSize),
       body2: TextStyle(
-          fontFamily: 'Sans',
+          fontFamily: fontFamilty,
           fontWeight: FontWeight.bold,
           color: Colors.white,
           fontSize: fontSize - 2.0),

@@ -23,7 +23,8 @@ class _AddPostPageState extends State<AddPostPage> {
   Future<File> imageFile;
   GoogleMap googleMap;
   Completer<GoogleMapController> _controller = Completer();
-
+  GoogleMapController mapController;
+  bool isMapCreated = false;
   static final CameraPosition _initialCamera = CameraPosition(
     target: LatLng(0, 0),
     zoom: 4,
@@ -50,14 +51,37 @@ class _AddPostPageState extends State<AddPostPage> {
     });
   }
 
+  changeMapMode() async {
+    int isDarkDayMode = await changeThemeBloc.getOption();
+    if (isDarkDayMode == 1) {
+      getJsonFile("assets/nightmode.json").then(setMapStyle);
+    } else {
+      getJsonFile("assets/daymode.json").then(setMapStyle);
+    }
+  }
+
+  Future<String> getJsonFile(String path) async {
+    return await rootBundle.loadString(path);
+  }
+
+  void setMapStyle(String mapStyle) {
+    mapController.setMapStyle(mapStyle);
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (isMapCreated) {
+      changeMapMode();
+    }
     googleMap = GoogleMap(
       mapType: _currentMapType,
       myLocationEnabled: true,
       initialCameraPosition: _initialCamera,
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
+        mapController = controller;
+        isMapCreated = true;
+        setState(() {});
       },
       markers: {gramercyMarker},
     );

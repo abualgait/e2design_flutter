@@ -4,7 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'base_classes/shaerd_prefs_helper.dart';
 import 'language_manager/AppLocalizations.dart';
-import 'dart:developer';
+
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -13,31 +14,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var isEnglish = 'en';
+  var isEnglish = true;
+  var supportedLocale;
 
   @override
   void initState() {
     super.initState();
+    SharedPreferencesHelper.setLanguageCode("ar");
+    SharedPreferencesHelper.getLanguageCode().then((onValue) {
+      if (onValue == "en") {
+        this.isEnglish = true;
+        supportedLocale = [Locale('en', 'US')];
+      } else {
+        this.isEnglish = false;
+        supportedLocale = [Locale('ar', 'EG')];
+      }
 
-      SharedPreferencesHelper.getLanguageCode().then((onValue) {
-        this.isEnglish = onValue;
-
-        setState(() {});
+      print("isEnglish " + isEnglish.toString());
+      setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       // List all of the app's supported locales here
-      supportedLocales: isEnglish == 'en'
-          ? [
-              Locale('en', 'US'),
-            ]
-          : [
-              Locale('ar', 'EG'),
-            ],
+      supportedLocales: supportedLocale,
       // These delegates make sure that the localization data for the proper language is loaded
       localizationsDelegates: [
         // A class which loads the translations from JSON files
@@ -76,7 +78,7 @@ enum AuthStatus { GUEST_MODE, LOGGED_IN }
 
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.GUEST_MODE;
-  String _userId = "";
+ 
   bool isLoggedIn = false;
 
   @override

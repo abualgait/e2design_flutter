@@ -4,7 +4,7 @@ import 'change_theme_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangeThemeBloc extends Bloc<ChangeThemeEvent, ChangeThemeState> {
-  double fontSize = 10.0;
+  double fontSize = 12.0;
 
   void onLightThemeChange(double fontSize) =>
       {dispatch(LightTheme()), this.fontSize = fontSize};
