@@ -39,4 +39,19 @@ class SharedPreferencesHelper {
 
     return prefs.getBool(_kUserCode) ?? false;
   }
+
+
+  static Future<bool> setSession(String key, String value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.setString(key, value);
+  }
+
+  static Future<bool> getSession(String key) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.getBool(key) ?? false;
+  }
+
+
 }

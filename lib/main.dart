@@ -1,10 +1,11 @@
 import 'package:e2_design/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'base_classes/shaerd_prefs_helper.dart';
+import 'constvalue/const_value.dart';
 import 'language_manager/AppLocalizations.dart';
-
 
 void main() => runApp(MyApp());
 
@@ -14,12 +15,46 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      new FlutterLocalNotificationsPlugin();
   var isEnglish = true;
   var supportedLocale;
+  String textValue = '';
 
   @override
   void initState() {
     super.initState();
+
+    var android = new AndroidInitializationSettings('mipmap/ic_launcher');
+    var ios = new IOSInitializationSettings();
+    var platform = new InitializationSettings(android, ios);
+    flutterLocalNotificationsPlugin.initialize(platform);
+    firebaseMessaging.subscribeToTopic("global");
+    firebaseMessaging.configure(
+      onLaunch: (Map<String, dynamic> msg) {
+        print(" onLaunch called ${(msg)}");
+      },
+      onResume: (Map<String, dynamic> msg) {
+        print(" onResume called ${(msg)}");
+      },
+      onMessage: (Map<String, dynamic> msg) {
+        showNotification(msg);
+
+        print(" onMessage called ${(msg)}");
+      },
+    );
+
+    firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, alert: true, badge: true));
+    firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings setting) {
+      print('IOS Setting Registed');
+    });
+    firebaseMessaging.getToken().then((token) {
+      update(token);
+    });
+
     SharedPreferencesHelper.setLanguageCode("ar");
     SharedPreferencesHelper.getLanguageCode().then((onValue) {
       if (onValue == "en") {
@@ -33,6 +68,34 @@ class _MyAppState extends State<MyApp> {
       print("isEnglish " + isEnglish.toString());
       setState(() {});
     });
+  }
+
+  showNotification(Map<String, dynamic> msg) async {
+    var android = new AndroidNotificationDetails(
+      '100',
+      "E2CHANNEL",
+      "This is QnA Channel",
+    );
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+
+      await flutterLocalNotificationsPlugin.show(
+          0, msg['aps']['alert']['title'],msg['aps']['alert']['title'], platform);
+    } else {
+
+      await flutterLocalNotificationsPlugin.show(
+          0,  msg['notification']['title'], msg['notification']['body'], platform);
+    }
+  }
+
+
+
+  update(String token) {
+    SharedPreferencesHelper.setSession(Constants.TOKEN, token);
+    textValue = token;
+    print("token " + textValue);
+    setState(() {});
   }
 
   @override
@@ -78,7 +141,7 @@ enum AuthStatus { GUEST_MODE, LOGGED_IN }
 
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.GUEST_MODE;
- 
+
   bool isLoggedIn = false;
 
   @override

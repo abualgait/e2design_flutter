@@ -34,7 +34,9 @@ dependencies:
   google_maps_flutter: ^0.5.4
   sqflite:
   path_provider:
-
+  firebase_core:
+  firebase_messaging: ^5.1.2
+  flutter_local_notifications:
 
 dev_dependencies:
   flutter_test:

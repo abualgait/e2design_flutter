@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "655472923961",
+    "firebase_url": "https://e2design-1564993320820.firebaseio.com",
+    "project_id": "e2design-1564993320820",
+    "storage_bucket": "e2design-1564993320820.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655472923961:android:f3422a0db51483bd",
+        "android_client_info": {
+          "package_name": "com.abualgait.e2_design"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "655472923961-qc5krgtpul6875nlciukvosmmuss3q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvOVNjjwrggfF0fGDZKhfT-kL0wn_HSDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "655472923961-qc5krgtpul6875nlciukvosmmuss3q3t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
