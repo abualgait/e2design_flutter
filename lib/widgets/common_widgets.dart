@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 Widget buildMainAppBar(
     BuildContext context, var title, TextStyle appbarstyle, Color bgcolor) {
@@ -37,6 +39,23 @@ Widget buildFlatButtonWidget(Color color, String txt) {
   );
 }
 
+Widget buildOutlinedButtonWidget(Color btn_color, Color txt_color, String txt) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 5.0, left: 5.0, right: 5.0),
+    child: OutlineButton(
+      color: btn_color,
+      shape: new RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(5.0)),
+      onPressed: () {},
+      textColor: txt_color,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Text(txt),
+      ),
+    ),
+  );
+}
+
 Widget menuRow(int index, var iconsArray, var textArray) {
   return Row(
     children: <Widget>[
@@ -66,8 +85,8 @@ Widget menuRow(int index, var iconsArray, var textArray) {
   );
 }
 
-Widget buildCard(var post_txt, var post_location, var post_time, var post_img,
-    var post_comments, var post_stars) {
+Widget buildCard(BuildContext context, var post_txt, var post_location,
+    var post_time, var post_img, var post_comments, var post_stars) {
   return Card(
     child: Column(
       children: <Widget>[
@@ -97,10 +116,20 @@ Widget buildCard(var post_txt, var post_location, var post_time, var post_img,
             ],
           ),
         ),
-        Image.network(
-          post_img,
-          fit: BoxFit.fill,
+        SizedBox(
+          height: 200,
+          width: MediaQuery.of(context).size.width,
+          child: CachedNetworkImage(
+            fit: BoxFit.fill,
+            imageUrl: post_img,
+            placeholder: (context, url) =>
+                Center(child: new CircularProgressIndicator()),
+            errorWidget: (context, url, error) => new Icon(Icons.error),
+            fadeInDuration: Duration(seconds: 1),
+            fadeOutDuration: Duration(seconds: 1),
+          ),
         ),
+
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -138,7 +167,9 @@ Widget buildCard(var post_txt, var post_location, var post_time, var post_img,
                 color: Colors.green,
                 shape: new RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(5.0)),
-                onPressed: () {},
+                onPressed: () {
+                  Share.share('check out my website https://example.com');
+                },
                 textColor: Colors.white,
                 child: Icon(
                   Icons.share,

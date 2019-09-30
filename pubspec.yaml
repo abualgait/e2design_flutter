@@ -28,6 +28,11 @@ dependencies:
   bloc:
   shared_preferences: ^0.4.2
   http: ^0.12.0
+  location:
+  geocoder:
+  image_picker: ^0.6.1
+  cached_network_image: ^1.1.1
+  share: ^0.6.2+1
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +54,7 @@ flutter:
   assets:
    - lang/ar.json
    - lang/en.json
+   - assets/images/image_placeholder.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

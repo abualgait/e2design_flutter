@@ -5,6 +5,7 @@ import 'package:e2_design/language_manager/AppLocalizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'add_post_page.dart';
 import 'main_drawer.dart';
 import 'main_page.dart';
 import 'notification_page.dart';
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage>
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context).translate('app_title'),
-                       //"E2 Design",
+                        //"E2 Design",
                         style: state.themeData.textTheme.headline,
                       )
                     ],
@@ -71,7 +72,6 @@ class _HomePageState extends State<HomePage>
                       child: IconButton(
                         icon: Icon(Icons.notifications),
                         onPressed: () {
-
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -91,7 +91,12 @@ class _HomePageState extends State<HomePage>
                       children: <Widget>[MainBody()]),
                 ),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddPostPage()),
+                    );
+                  },
                   child: Icon(Icons.add),
                 ),
               ),

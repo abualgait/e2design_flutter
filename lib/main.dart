@@ -1,7 +1,6 @@
 import 'package:e2_design/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'base_classes/shaerd_prefs_helper.dart';
 import 'language_manager/AppLocalizations.dart';
 import 'dart:developer';
