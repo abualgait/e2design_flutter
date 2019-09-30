@@ -76,17 +76,10 @@ class _MainBodyState extends State<MainBody> {
 
   void _save(List<Post> posts) async {
     await helper.deleteAllPosts();
-
-//        for (int i = 0; i < posts.length; i++) {
-//      await helper.deletePost(i);
-//    }
-     await helper.insertPost(posts[0]);
-
-//    for (int i = 0; i < posts.length; i++) {
-//      await helper.insertPost(posts[i]);
-//    }
+    for (int i = 0; i <= posts.length; i++) {
+      await helper.insertPost(posts[i]);
+    }
     print("list of offline: " + posts.length.toString());
-
   }
 
   void updateListView() {
