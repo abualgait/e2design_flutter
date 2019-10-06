@@ -3,10 +3,12 @@ import 'package:e2_design/db_helpers/posts_helper.dart';
 import 'package:e2_design/models/post_response.dart';
 import 'package:e2_design/network_manager/api_response.dart';
 import 'package:e2_design/network_manager/network_blocs/post_bloc.dart';
+import 'package:e2_design/screens/post_details_page.dart';
+import 'package:e2_design/widgets/app_widgets.dart';
+import 'package:e2_design/widgets/common_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:e2_design/widgets/common_widgets.dart';
-import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite/sqflite.dart';
 
 class MainBody extends StatefulWidget {
   @override
@@ -18,7 +20,6 @@ class _MainBodyState extends State<MainBody> {
   DatabaseHelper helper = DatabaseHelper();
   List<Post> postList;
   int count = 0;
-  bool insert = false;
 
   @override
   void initState() {
@@ -41,20 +42,25 @@ class _MainBodyState extends State<MainBody> {
                   return Loading(loadingMessage: snapshot.data.message);
                   break;
                 case Status.COMPLETED:
-//                  updateListView();
-//                  List<Post> concatPostsList = new List.from(snapshot.data.data)
-//                    ..addAll(postList);
-//                  List<Post> result = concatPostsList.toSet().toList();
-                  return PostList(postList: snapshot.data.data, helper: helper);
+                  _save(snapshot.data.data);
+                  return PostList(
+                    postList: snapshot.data.data,
+                  );
                   break;
                 case Status.ERROR:
-                  updateListView();
-                  return count == 0
-                      ? Error(
-                          errorMessage: snapshot.data.message,
-                          onRetryPressed: () => _bloc.fetchPostList(),
-                        )
-                      : PostList(postList: postList, helper: helper);
+                  if (postList == null) {
+                    postList = List<Post>();
+                    updateListView();
+                  }
+                  print("list of posts: " + count.toString());
+                  if (count == 0) {
+                    return Error(
+                      errorMessage: snapshot.data.message,
+                      onRetryPressed: () => _bloc.fetchPostList(),
+                    );
+                  } else {
+                    return PostList(postList: postList);
+                  }
 
                   break;
               }
@@ -66,6 +72,20 @@ class _MainBodyState extends State<MainBody> {
     );
   }
 
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
+
+  void _save(List<Post> posts) async {
+    await helper.deleteAllPosts();
+    for (int i = 0; i <= posts.length; i++) {
+      await helper.insertPost(posts[i]);
+    }
+    print("list of offline: " + posts.length.toString());
+  }
+
   void updateListView() {
     final Future<Database> dbFuture = helper.initializeDatabase();
     dbFuture.then((database) {
@@ -74,54 +94,68 @@ class _MainBodyState extends State<MainBody> {
         setState(() {
           this.postList = postList;
           this.count = postList.length;
+          print("list of update: " + postList.length.toString());
         });
       });
     });
   }
-
-  @override
-  void dispose() {
-    _bloc.dispose();
-    super.dispose();
-  }
 }
 
-class PostList extends StatefulWidget {
+class TrendingList extends StatelessWidget {
   final List<Post> postList;
-  final DatabaseHelper helper;
 
-  const PostList({Key key, this.postList, this.helper}) : super(key: key);
-
-  @override
-  _PostListState createState() => _PostListState();
-}
-
-class _PostListState extends State<PostList> {
-  void _save(List<Post> posts) async {
-    await widget.helper.deleteAllPosts();
-    widget.helper.insertAllPosts(posts);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _save(widget.postList);
-  }
+  const TrendingList({Key key, this.postList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: widget.postList.length,
+      scrollDirection: Axis.horizontal,
+      itemCount: postList.length,
       itemBuilder: (context, index) {
         return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: buildCard(
-                widget.postList[index].post_txt,
-                widget.postList[index].post_location,
-                widget.postList[index].post_time,
-                widget.postList[index].post_img,
-                widget.postList[index].post_comments,
-                widget.postList[index].post_stars));
+            child: TrendCard(
+                context,
+                postList[index].post_txt,
+                postList[index].post_location,
+                postList[index].post_time,
+                postList[index].post_img,
+                postList[index].post_comments,
+                postList[index].post_stars));
+      },
+    );
+  }
+}
+
+class PostList extends StatelessWidget {
+  final List<Post> postList;
+
+  const PostList({Key key, this.postList}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: postList.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PostDetailsPage(postList[index].id)),
+            );
+          },
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PostCard(
+                  context,
+                  postList[index].post_txt,
+                  postList[index].post_location,
+                  postList[index].post_time,
+                  postList[index].post_img,
+                  postList[index].post_comments,
+                  postList[index].post_stars)),
+        );
       },
     );
   }

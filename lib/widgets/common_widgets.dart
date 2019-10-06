@@ -1,16 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e2_design/bloc/change_theme_state.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
-Widget buildMainAppBar(
+Widget buildMainAppBar(ChangeThemeState state, bool isTitle, bool isImage,
     BuildContext context, var title, TextStyle appbarstyle, Color bgcolor) {
   return AppBar(
     backgroundColor: bgcolor,
     centerTitle: true,
     elevation: 5,
-    title: Text(
-      // AppLocalizations.of(context).translate('app_title'),
-      title,
-      style: appbarstyle,
-    ),
+    title: TitleImageWidget(state, title, isTitle, isImage),
     leading: IconButton(
       icon: Icon(Icons.arrow_back),
       onPressed: () {
@@ -18,6 +17,48 @@ Widget buildMainAppBar(
       },
     ),
   );
+}
+
+Widget buildMainAppBarWithActions(
+    ChangeThemeState state,
+    bool isTitle,
+    bool isImage,
+    BuildContext context,
+    var title,
+    TextStyle appbarstyle,
+    Color bgcolor,
+    List<Widget> actions) {
+  return AppBar(
+    backgroundColor: bgcolor,
+    centerTitle: true,
+    elevation: 5,
+    title: TitleImageWidget(state, title, isTitle, isImage),
+    leading: IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
+    actions: actions,
+  );
+}
+
+Widget TitleImageWidget(
+    ChangeThemeState state, String title, bool isTitle, bool isImage) {
+  if (isImage) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Image.asset("assets/icon/logo.png"),
+    );
+  } else {
+    return Text(
+//                              AppLocalizations.of(context)
+//                                  .translate('app_title'),
+      title,
+      //"E2 Design",
+      style: state.themeData.textTheme.headline,
+    );
+  }
 }
 
 Widget buildFlatButtonWidget(Color color, String txt) {
@@ -83,8 +124,8 @@ Widget menuRow(int index, var iconsArray, var textArray) {
   );
 }
 
-Widget buildCard(var post_txt, var post_location, var post_time, var post_img,
-    var post_comments, var post_stars) {
+Widget buildCard(BuildContext context, var post_txt, var post_location,
+    var post_time, var post_img, var post_comments, var post_stars) {
   return Card(
     child: Column(
       children: <Widget>[
@@ -114,9 +155,18 @@ Widget buildCard(var post_txt, var post_location, var post_time, var post_img,
             ],
           ),
         ),
-        Image.network(
-          post_img,
-          fit: BoxFit.fill,
+        SizedBox(
+          height: 200,
+          width: MediaQuery.of(context).size.width,
+          child: CachedNetworkImage(
+            fit: BoxFit.fill,
+            imageUrl: post_img,
+            placeholder: (context, url) =>
+                Center(child: new CircularProgressIndicator()),
+            errorWidget: (context, url, error) => new Icon(Icons.error),
+            fadeInDuration: Duration(seconds: 1),
+            fadeOutDuration: Duration(seconds: 1),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -155,7 +205,9 @@ Widget buildCard(var post_txt, var post_location, var post_time, var post_img,
                 color: Colors.green,
                 shape: new RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(5.0)),
-                onPressed: () {},
+                onPressed: () {
+                  Share.share('check out my website https://example.com');
+                },
                 textColor: Colors.white,
                 child: Icon(
                   Icons.share,

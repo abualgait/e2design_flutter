@@ -42,14 +42,14 @@ class DatabaseHelper {
 
     // Open/create the database at a given path
     var postsDatabase =
-        await openDatabase(path, version: 1, onCreate: _createDb);
+    await openDatabase(path, version: 1, onCreate: _createDb);
     return postsDatabase;
   }
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
         'CREATE TABLE $PostTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colPostText TEXT,$colPostImage TEXT, '
-        '$colPostLocation TEXT, $colPostComments TEXT, $colPostTime TEXT,$colPostStars TEXT)');
+            '$colPostLocation TEXT, $colPostComments TEXT, $colPostTime TEXT,$colPostStars TEXT)');
   }
 
   // Fetch Operation: Get all Post objects from database
@@ -88,7 +88,7 @@ class DatabaseHelper {
   Future<int> deletePost(int id) async {
     var db = await this.database;
     int result =
-        await db.rawDelete('DELETE FROM $PostTable WHERE $colId = $id');
+    await db.rawDelete('DELETE FROM $PostTable WHERE $colId = $id');
     return result;
   }
 
@@ -103,21 +103,21 @@ class DatabaseHelper {
   Future<int> getCount() async {
     Database db = await this.database;
     List<Map<String, dynamic>> x =
-        await db.rawQuery('SELECT COUNT (*) from $PostTable');
+    await db.rawQuery('SELECT COUNT (*) from $PostTable');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
 
   // Get the 'Map List' [ List<Map> ] and convert it to 'Post List' [ List<Post> ]
   Future<List<Post>> getPostList() async {
-    var PostMapList = await getPostMapList(); // Get 'Map List' from database
+    var postMapList = await getPostMapList(); // Get 'Map List' from database
     int count =
-        PostMapList.length; // Count the number of map entries in db table
+        postMapList.length; // Count the number of map entries in db table
 
     List<Post> PostList = List<Post>();
     // For loop to create a 'Post List' from a 'Map List'
     for (int i = 0; i < count; i++) {
-      PostList.add(Post.fromMapObject(PostMapList[i]));
+      PostList.add(Post.fromMapObject(postMapList[i]));
     }
 
     return PostList;

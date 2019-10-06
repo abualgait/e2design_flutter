@@ -37,6 +37,8 @@ dependencies:
   firebase_core:
   firebase_messaging: ^5.1.2
   flutter_local_notifications:
+  cached_network_image: ^1.1.1
+  share: ^0.6.2+1
 
 dev_dependencies:
   flutter_test:
@@ -63,7 +65,9 @@ flutter:
    - lang/ar.json
    - lang/en.json
    - assets/images/image_placeholder.png
+   - assets/images/worldmap.jpg
    - assets/
+   - assets/icon/logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

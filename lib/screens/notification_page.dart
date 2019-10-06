@@ -32,12 +32,12 @@ class _NotificationPageState extends State<NotificationPage> {
         return Theme(
             data: state.themeData,
             child: Scaffold(
-              appBar: buildMainAppBar(
-                  context,
-                  AppLocalizations.of(context).translate('app_notification'),
-                  state.themeData.textTheme.headline,
-                  state.themeData.primaryColor),
-              backgroundColor: Colors.white10,
+//              appBar: buildMainAppBar(
+//                  context,
+//                  AppLocalizations.of(context).translate('app_notification'),
+//                  state.themeData.textTheme.headline,
+//                  state.themeData.primaryColor),
+//              backgroundColor: Colors.white10,
               body: Container(
                 color: state.themeData.primaryColor,
                 child: RefreshIndicator(
