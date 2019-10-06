@@ -138,6 +138,22 @@ Widget PostCard(BuildContext context, var post_txt, var post_location,
                 children: <Widget>[
                   Row(
                     children: <Widget>[
+                      Icon(Icons.send, color: Colors.grey, size: 20),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text(
+                        "5",
+                        style: TextStyle(fontSize: 10, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
                       Icon(Icons.favorite, color: Colors.red, size: 20),
                       SizedBox(
                         width: 3,
@@ -151,22 +167,13 @@ Widget PostCard(BuildContext context, var post_txt, var post_location,
                   SizedBox(
                     width: 9,
                   ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.send, color: Colors.grey, size: 20),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text(
-                        "5",
-                        style: TextStyle(fontSize: 10, color: Colors.grey),
-                      ),
-                    ],
-                  ),
+                  Icon(Icons.share, color: Colors.grey, size: 20),
                 ],
               ),
-              Icon(Icons.share, color: Colors.grey, size: 20),
             ],
+          ),
+          SizedBox(
+            height: 5,
           ),
           MyPeople(),
           Text(

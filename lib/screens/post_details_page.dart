@@ -5,6 +5,7 @@ import 'package:e2_design/language_manager/AppLocalizations.dart';
 import 'package:e2_design/models/post_details_response.dart';
 import 'package:e2_design/network_manager/api_response.dart';
 import 'package:e2_design/network_manager/network_blocs/post_details_bloc.dart';
+import 'package:e2_design/screens/respond_to_post_page.dart';
 import 'package:e2_design/widgets/app_widgets.dart';
 import 'package:e2_design/widgets/common_widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -107,7 +108,14 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: FloatingActionButton(
                                           elevation: 5,
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      RespondToPostPage(2)),
+                                            );
+                                          },
                                           backgroundColor: Colors.pink,
                                           child: Icon(Icons.send),
                                         ),
