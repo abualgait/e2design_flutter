@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
       update(token);
     });
 
-    SharedPreferencesHelper.setLanguageCode("en");
+
     SharedPreferencesHelper.getLanguageCode().then((onValue) {
       if (onValue == "en") {
         this.isEnglish = true;

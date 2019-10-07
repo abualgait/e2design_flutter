@@ -345,12 +345,3 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
     );
   }
 }
-/*Image.asset(
-            "assets/images/image_placeholder.png",
-            fit: BoxFit.cover,
-          );*/
-/*Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    fit: BoxFit.fill, image: FileImage(snapshot.data))),
-          )*/

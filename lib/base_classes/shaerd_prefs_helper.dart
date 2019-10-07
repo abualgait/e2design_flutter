@@ -47,10 +47,22 @@ class SharedPreferencesHelper {
     return prefs.setString(key, value);
   }
 
-  static Future<bool> getSession(String key) async {
+  static Future<String> getSession(String key) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    return prefs.getBool(key) ?? false;
+    return prefs.getString(key) ?? "";
+  }
+
+  static Future<bool> setSessionDouble(String key, double value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.setDouble(key, value);
+  }
+
+  static Future<double> getSessionDouble(String key) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.getDouble(key) ?? "";
   }
 
 

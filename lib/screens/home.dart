@@ -1,10 +1,11 @@
+import 'package:e2_design/base_classes/shaerd_prefs_helper.dart';
 import 'package:e2_design/bloc/change_theme_bloc.dart';
 import 'package:e2_design/bloc/change_theme_state.dart';
+import 'package:e2_design/screens/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'add_new_post_page.dart';
-import 'add_post_page.dart';
 import 'main_drawer.dart';
 import 'main_page.dart';
 import 'notification_page.dart';
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage>
   AnimationController controller;
 
   bool isCollapsed = true;
+  bool isRTL = false;
   double screenWidth, screenHeight;
   Duration duration = new Duration(microseconds: 300);
   AnimationController _animationController;
@@ -39,7 +41,15 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    SharedPreferencesHelper.getLanguageCode().then((onValue) {
+      if (onValue == "en") {
+        isRTL = false;
+      } else {
+        isRTL = true;
+      }
 
+      setState(() {});
+    });
     _animationController = AnimationController(duration: duration, vsync: this);
     _scaleAnimation =
         Tween<double>(begin: 1, end: 0.8).animate(_animationController);
@@ -147,8 +157,10 @@ class _HomePageState extends State<HomePage>
         bottom: 0,
 //              top: isCollapsed ? 0 : screen.height * 0.1,
 //              bottom: isCollapsed ? 0 : screen.height * 0.1,
-        left: isCollapsed ? 0 : screen.width * 0.5,
-        right: isCollapsed ? 0 : screen.width * -0.5,
+        left:
+            isCollapsed ? 0 : isRTL ? screen.width * -0.5 : screen.width * 0.5,
+        right:
+            isCollapsed ? 0 : isRTL ? screen.width * 0.5 : screen.width * -0.5,
         child: ScaleTransition(
             scale: _scaleAnimation,
             child: Material(
@@ -222,10 +234,7 @@ class _HomePageState extends State<HomePage>
 
   Widget TitleImageWidget(ChangeThemeState state, indexpage) {
     if (appbartitle == "TimeLine") {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Image.asset("assets/icon/logo.png"),
-      );
+      return Image.asset("assets/icon/logo.png");
     } else {
       return Text(
 //                              AppLocalizations.of(context)
@@ -241,7 +250,7 @@ class _HomePageState extends State<HomePage>
     return Container(
       color: Color.fromRGBO(0, 65, 109, 108),
       child: Padding(
-        padding: const EdgeInsets.only(left: 24.0),
+        padding: const EdgeInsets.only(left: 24.0, right: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -440,9 +449,21 @@ class _HomePageState extends State<HomePage>
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Icon(
-                      Icons.settings,
-                      color: Colors.white,
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SettingsPage()),
+                          );
+                          _onPressedMenu();
+                        });
+                      },
+                      icon: Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                      ),
                     ),
                     SizedBox(
                       width: 10,
