@@ -68,7 +68,6 @@ class _SettingsPageState extends State<SettingsPage> {
                             children: <Widget>[
                               Text(
                                 "Language",
-                                style: TextStyle(fontSize: 10),
                               ),
                               GestureDetector(
                                 onTap: () {
@@ -237,7 +236,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                     children: <Widget>[
                                       Text(
                                         "Dark Mode",
-
                                       ),
                                       Switch(
                                           onChanged: (onValue) {

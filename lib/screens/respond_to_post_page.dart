@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geocoder/model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
@@ -29,7 +30,6 @@ class RespondToPostPage extends StatefulWidget {
 }
 
 class _RespondToPostPageState extends State<RespondToPostPage> {
-  Future<File> imageFile;
   PostDetailsBloc _bloc;
 
   @override
@@ -100,6 +100,30 @@ class _RespondToPostPageState extends State<RespondToPostPage> {
       },
     );
   }
+}
+
+class PostDetailsWidget extends StatefulWidget {
+  final PostDetailsObj postDetailsObj;
+
+  const PostDetailsWidget({Key key, this.postDetailsObj}) : super(key: key);
+
+  @override
+  _PostDetailsWidgetState createState() => _PostDetailsWidgetState();
+}
+
+class _PostDetailsWidgetState extends State<PostDetailsWidget> {
+  Future<File> imageFile;
+  GoogleMap googleMap;
+  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController mapController;
+  bool isMapCreated = false;
+  static final CameraPosition _initialCamera = CameraPosition(
+    target: LatLng(0, 0),
+    zoom: 4,
+  );
+
+  CameraPosition _currentCameraPosition;
+  MapType _currentMapType = MapType.normal;
 
   _pickImage(String action) {
     action == 'Gallery'
@@ -152,13 +176,10 @@ class _RespondToPostPageState extends State<RespondToPostPage> {
                   blurRadius: 10.0,
                   offset: Offset(0.0, 10.0))
             ]),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              child: Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.fill, image: FileImage(snapshot.data))),
-              ),
+            child: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover, image: FileImage(snapshot.data))),
             ),
           );
         } else if (snapshot.error != null) {
@@ -167,43 +188,78 @@ class _RespondToPostPageState extends State<RespondToPostPage> {
             textAlign: TextAlign.center,
           );
         } else {
-          return Container(
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(.4),
-                    blurRadius: 10.0,
-                    offset: Offset(0.0, 10.0))
-              ]),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                child: Image.asset(
-                  "assets/images/image_placeholder.png",
-                  fit: BoxFit.cover,
-                ),
-              ));
+          return Image.asset(
+            "assets/images/image_placeholder.png",
+            fit: BoxFit.cover,
+            height: 150,
+          );
         }
       },
     );
   }
-}
 
-class PostDetailsWidget extends StatelessWidget {
-  final PostDetailsObj postDetailsObj;
+  @override
+  void initState() {
+    super.initState();
+  }
 
-  const PostDetailsWidget({Key key, this.postDetailsObj}) : super(key: key);
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _onMapTypeButtonPressed() {
+    setState(() {
+      _currentMapType = _currentMapType == MapType.normal
+          ? MapType.satellite
+          : MapType.normal;
+    });
+  }
+
+  changeMapMode() async {
+    int isDarkDayMode = await changeThemeBloc.getOption();
+    if (isDarkDayMode == 1) {
+      getJsonFile("assets/nightmode.json").then(setMapStyle);
+    } else {
+      getJsonFile("assets/daymode.json").then(setMapStyle);
+    }
+  }
+
+  Future<String> getJsonFile(String path) async {
+    return await rootBundle.loadString(path);
+  }
+
+  void setMapStyle(String mapStyle) {
+    mapController.setMapStyle(mapStyle);
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isMapCreated) {
+      changeMapMode();
+    }
+    googleMap = GoogleMap(
+      mapType: _currentMapType,
+      myLocationEnabled: true,
+      initialCameraPosition: _initialCamera,
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+        mapController = controller;
+        isMapCreated = true;
+        setState(() {});
+      },
+      markers: {gramercyMarker},
+    );
     return Stack(
       children: <Widget>[
         Container(
           height: 300.0,
           child: CachedNetworkImage(
-            fit: BoxFit.fill,
-            imageUrl: postDetailsObj.post_img,
+            fit: BoxFit.cover,
+            imageUrl: widget.postDetailsObj.post_img,
             placeholder: (context, url) => Image.asset(
               "assets/images/image_placeholder.png",
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
             errorWidget: (context, url, error) => new Icon(Icons.error),
             fadeInDuration: Duration(seconds: 1),
@@ -220,7 +276,9 @@ class PostDetailsWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   icon: Icon(Icons.clear),
                 )
               ],
@@ -245,7 +303,7 @@ class PostDetailsWidget extends StatelessWidget {
                                 height: 10,
                               ),
                               Text(
-                                postDetailsObj.post_txt,
+                                widget.postDetailsObj.post_txt,
                                 style: TextStyle(fontSize: 14),
                               ),
                               SizedBox(
@@ -261,7 +319,7 @@ class PostDetailsWidget extends StatelessWidget {
                                       SizedBox(
                                         width: 2,
                                       ),
-                                      Text(postDetailsObj.post_location),
+                                      Text(widget.postDetailsObj.post_location),
                                     ],
                                   ),
                                   Row(
@@ -270,7 +328,7 @@ class PostDetailsWidget extends StatelessWidget {
                                       SizedBox(
                                         width: 2,
                                       ),
-                                      Text(postDetailsObj.post_time),
+                                      Text(widget.postDetailsObj.post_time),
                                     ],
                                   )
                                 ],
@@ -291,6 +349,21 @@ class PostDetailsWidget extends StatelessWidget {
                               hintStyle:
                                   TextStyle(fontSize: 14.0, color: Colors.grey),
                               hintText: 'Leave your answer here'),
+                        ),
+                        SizedBox(
+                          height: 150,
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: showImage(),
+                                flex: 1,
+                              ),
+                              Expanded(
+                                child: googleMap,
+                                flex: 1,
+                              )
+                            ],
+                          ),
                         ),
                         Container(
                           color: Colors.redAccent,
@@ -314,12 +387,16 @@ class PostDetailsWidget extends StatelessWidget {
                                       IconButton(
                                         color: Colors.white,
                                         icon: Icon(Icons.camera_alt),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          _pickImage('Camera');
+                                        },
                                       ),
                                       IconButton(
                                         color: Colors.white,
                                         icon: Icon(Icons.image),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          _pickImage('Gallery');
+                                        },
                                       ),
                                       IconButton(
                                         color: Colors.white,
@@ -341,3 +418,12 @@ class PostDetailsWidget extends StatelessWidget {
     );
   }
 }
+
+Marker gramercyMarker = Marker(
+  markerId: MarkerId('Tech'),
+  position: LatLng(30.0016564, 31.1367549),
+  infoWindow: InfoWindow(title: 'Gramercy Tavern'),
+  icon: BitmapDescriptor.defaultMarkerWithHue(
+    BitmapDescriptor.hueViolet,
+  ),
+);
