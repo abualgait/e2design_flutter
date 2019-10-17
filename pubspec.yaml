@@ -39,6 +39,8 @@ dependencies:
   flutter_local_notifications:
   cached_network_image: ^1.1.1
   share: ^0.6.2+1
+  flutter_offline: "^0.2.4"
+  percent_indicator: ^2.1.1+1
 
 dev_dependencies:
   flutter_test:

@@ -61,7 +61,7 @@ Widget TitleImageWidget(
   }
 }
 
-Widget buildFlatButtonWidget(Color color, String txt) {
+Widget buildFlatButtonWidget(Color color, String txt, double fontsize) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 5.0, left: 5.0, right: 5.0),
     child: FlatButton(
@@ -72,7 +72,10 @@ Widget buildFlatButtonWidget(Color color, String txt) {
       textColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(2.0),
-        child: Text(txt),
+        child: Text(
+          txt,
+          style: TextStyle(fontSize: fontsize),
+        ),
       ),
     ),
   );

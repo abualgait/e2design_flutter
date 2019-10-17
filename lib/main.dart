@@ -1,8 +1,10 @@
+import 'package:e2_design/screens/auth/login.dart';
 import 'package:e2_design/screens/home.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'base_classes/shaerd_prefs_helper.dart';
 import 'constvalue/const_value.dart';
 import 'language_manager/AppLocalizations.dart';
@@ -154,7 +156,7 @@ class _RootPageState extends State<RootPage> {
     if (isLoggedIn) {
       return new HomePage();
     } else {
-      return new HomePage();
+      return new LoginPage();
     }
   }
 }

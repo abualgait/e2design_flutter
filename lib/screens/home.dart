@@ -2,10 +2,13 @@ import 'package:e2_design/base_classes/shaerd_prefs_helper.dart';
 import 'package:e2_design/bloc/change_theme_bloc.dart';
 import 'package:e2_design/bloc/change_theme_state.dart';
 import 'package:e2_design/screens/settings_page.dart';
+import 'package:e2_design/widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import 'add_new_post_page.dart';
+import 'auth/login.dart';
 import 'main_drawer.dart';
 import 'main_page.dart';
 import 'notification_page.dart';
@@ -69,7 +72,7 @@ class _HomePageState extends State<HomePage>
   }
 
   var firstTime = true;
-  var appbartitle = "E2Design";
+  var appbartitle = "";
 
   @override
   Widget build(BuildContext context) {
@@ -83,11 +86,11 @@ class _HomePageState extends State<HomePage>
           return Theme(
               data: state.themeData,
               child: Scaffold(
-                backgroundColor: Colors.white10,
-                body: Stack(
-                  children: <Widget>[PageMenu(), MasterPage()],
-                ),
-              ));
+                  backgroundColor: Colors.white10,
+                  body: Center(
+                      child: Stack(
+                    children: <Widget>[PageMenu(), MasterPage()],
+                  ))));
         });
   }
 
@@ -157,10 +160,12 @@ class _HomePageState extends State<HomePage>
         bottom: 0,
 //              top: isCollapsed ? 0 : screen.height * 0.1,
 //              bottom: isCollapsed ? 0 : screen.height * 0.1,
-        left:
-            isCollapsed ? 0 : isRTL ? screen.width * -0.5 : screen.width * 0.5,
-        right:
-            isCollapsed ? 0 : isRTL ? screen.width * 0.5 : screen.width * -0.5,
+        left: isCollapsed
+            ? 0
+            : isRTL ? screen.width * -0.65 : screen.width * 0.65,
+        right: isCollapsed
+            ? 0
+            : isRTL ? screen.width * 0.65 : screen.width * -0.65,
         child: ScaleTransition(
             scale: _scaleAnimation,
             child: Material(
@@ -250,40 +255,116 @@ class _HomePageState extends State<HomePage>
     return Container(
       color: Color.fromRGBO(0, 65, 109, 108),
       child: Padding(
-        padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Spacer(
-              flex: 1,
+              flex: 3,
             ),
-            new Container(
-                width: 60.0,
-                height: 60.0,
-                decoration: new BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: new DecorationImage(
-                        fit: BoxFit.fill,
-                        image: new NetworkImage(
-                            "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")))),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                new Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(
+                            fit: BoxFit.fill,
+                            image: new NetworkImage(
+                                "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")))),
+                SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "Muhammad Sayed",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "Cairo, Egypt",
+                      style: TextStyle(color: Colors.grey, fontSize: 10),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             SizedBox(
-              height: 15,
+              height: 20,
             ),
-            Text(
-              "Muhammad Sayed",
-              style: TextStyle(color: Colors.white, fontSize: 18),
-            ),
+            //progress user data
+            SizedBox(
+                width: MediaQuery.of(context).size.width * 0.60,
+                child: Column(
+                  children: <Widget>[
+                    new LinearPercentIndicator(
+                      lineHeight: 14.0,
+                      percent: 0.70,
+                      center: Text(
+                        "70.0%",
+                        style: TextStyle(fontSize: 10, color: Colors.black),
+                      ),
+                      backgroundColor: Colors.grey,
+                      progressColor: Colors.yellowAccent,
+//              leading:  new Text("Golden",style: TextStyle(fontSize: 10),),
+//              trailing: new Text("Diamond",style: TextStyle(fontSize: 10),),
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            SizedBox(
+                                height: 5,
+                                width: 5,
+                                child: Container(
+                                  color: Colors.yellowAccent,
+                                )),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "Golden",
+                              style: TextStyle(fontSize: 10),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            SizedBox(
+                                height: 5,
+                                width: 5,
+                                child: Container(
+                                  color: Colors.grey,
+                                )),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "Diamond",
+                              style: TextStyle(fontSize: 10),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                )),
             SizedBox(
               height: 5,
             ),
-            Text(
-              "Cairo, Egypt",
-              style: TextStyle(color: Colors.grey, fontSize: 12),
-            ),
+
             SizedBox(
-              height: 30,
+              height: 20,
             ),
             Row(
               children: <Widget>[
@@ -443,7 +524,28 @@ class _HomePageState extends State<HomePage>
               ],
             ),
             Spacer(
-              flex: 3,
+              flex: 2,
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.60,
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                          //invite a friend and get 100 points
+                          child: buildFlatButtonWidget(Colors.redAccent,
+                              "invite a friend and get 100 points",10)),
+                    ],
+                  ),
+                  //have an idea, great talk to us
+                  Row(children: <Widget>[
+                    Expanded(
+                        child: buildFlatButtonWidget(Colors.deepPurpleAccent,
+                            "have an idea, great talk to us",10)),
+                  ]),
+                ],
+              ),
             ),
             Row(
               children: <Widget>[
@@ -489,9 +591,22 @@ class _HomePageState extends State<HomePage>
                 ),
                 Row(
                   children: <Widget>[
-                    Icon(
-                      Icons.exit_to_app,
-                      color: Colors.white,
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          SharedPreferencesHelper.setUserLoggedOut();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                          );
+                          _onPressedMenu();
+                        });
+                      },
+                      icon: Icon(
+                        Icons.exit_to_app,
+                        color: Colors.white,
+                      ),
                     ),
                     SizedBox(
                       width: 10,

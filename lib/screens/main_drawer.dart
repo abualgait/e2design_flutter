@@ -112,14 +112,14 @@ class _MainDrawerState extends State<MainDrawer> {
                       Expanded(
                           //invite a friend and get 100 points
                           child: buildFlatButtonWidget(Colors.redAccent,
-                              "invite a friend and get 100 points")),
+                              "invite a friend and get 100 points",12)),
                     ],
                   ),
                   //have an idea, great talk to us
                   Row(children: <Widget>[
                     Expanded(
                         child: buildFlatButtonWidget(Colors.deepPurpleAccent,
-                            "have an idea, great talk to us")),
+                            "have an idea, great talk to us",12)),
                   ]),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
