@@ -19,18 +19,24 @@ class PostBloc {
   PostBloc() {
     _movieListController = StreamController<ApiResponse<List<Post>>>();
     _baseRepository = BaseRepository();
-    fetchPostList();
+    //fetchPostList(true);
   }
 
-  fetchPostList() async {
-    movieListSink.add(ApiResponse.loading('Fetching Data'));
+  fetchPostList(bool isFirstTime) async {
+    if (isFirstTime) movieListSink.add(ApiResponse.loading('Fetching Data'));
     try {
       List<Post> posts = await _baseRepository.fetchPostList();
       movieListSink.add(ApiResponse.completed(posts));
+
     } catch (e) {
       movieListSink.add(ApiResponse.error(e.toString()));
       print(e);
     }
+  }
+
+  Future<List<Post>> fetchMoreData(bool isFirstTime) async {
+    if (isFirstTime) movieListSink.add(ApiResponse.loading('Fetching Data'));
+    return await _baseRepository.fetchPostList();
   }
 
   dispose() {

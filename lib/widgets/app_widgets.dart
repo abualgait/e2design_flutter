@@ -178,7 +178,7 @@ Widget PostCard(BuildContext context, var post_txt, var post_location,
           MyPeople(),
           Text(
             post_txt,
-            style: TextStyle(color: Colors.black),
+
           ),
         ],
       ));

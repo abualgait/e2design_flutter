@@ -27,7 +27,7 @@ class SharedPreferencesHelper {
 
   static void setUserLoggedIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(_kUserCode, false);
+    prefs.setBool(_kUserCode, true);
   }
 
   static void setUserLoggedOut() async {

@@ -27,23 +27,25 @@ class _MainBodyState extends State<MainBody> {
   int _start = 10;
   bool ishideconnectivity = true;
 
+  ScrollController _scrollController = ScrollController();
+  int _currentMax = 10;
+
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
-          (Timer timer) =>
-          setState(
-                () {
-              if (_start < 1) {
-                timer.cancel();
-                setState(() {
-                  ishideconnectivity = false;
-                });
-              } else {
-                _start = _start - 1;
-              }
-            },
-          ),
+      (Timer timer) => setState(
+        () {
+          if (_start < 1) {
+            timer.cancel();
+            setState(() {
+              ishideconnectivity = false;
+            });
+          } else {
+            _start = _start - 1;
+          }
+        },
+      ),
     );
   }
 
@@ -51,7 +53,16 @@ class _MainBodyState extends State<MainBody> {
   void initState() {
     super.initState();
     _bloc = PostBloc();
-    startTimer();
+    //startTimer();
+    postList = List<Post>();
+    _bloc.fetchPostList(true);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        print("get data");
+        _bloc.fetchPostList(false);
+      }
+    });
   }
 
   @override
@@ -60,20 +71,22 @@ class _MainBodyState extends State<MainBody> {
       backgroundColor: Colors.white10,
       body: OfflineBuilder(
           debounceDuration: Duration.zero,
-          connectivityBuilder: (BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,) {
+          connectivityBuilder: (
+            BuildContext context,
+            ConnectivityResult connectivity,
+            Widget child,
+          ) {
             final bool connected = connectivity != ConnectivityResult.none;
             if (!connected) {
               // _bloc.fetchPostList();
               ishideconnectivity = true;
-            }else{
-              startTimer();
+            } else {
+              //startTimer();
             }
             return new Column(
               children: [
                 Visibility(
-                  visible:ishideconnectivity,
+                  visible: ishideconnectivity,
                   child: SizedBox(
                     height: 24.0,
                     child: AnimatedContainer(
@@ -83,41 +96,41 @@ class _MainBodyState extends State<MainBody> {
 //                      color: connected ? Color(0xFF00EE44) : Color(0xFFEE4400),
                           child: connected
                               ? Visibility(
-                            visible: ishideconnectivity,
-                            child: Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width,
-                                child: Center(child: Text('ONLINE')),
-                                color: Color(0xFF00EE44)),
-                          )
+                                  visible: ishideconnectivity,
+                                  child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Center(child: Text('ONLINE')),
+                                      color: Color(0xFF00EE44)),
+                                )
                               : Container(
-                            color: Color(0xFFEE4400),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Center(child: Text('OFFLINE')),
-                                SizedBox(width: 8.0),
-                                SizedBox(
-                                  width: 12.0,
-                                  height: 12.0,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.0,
-                                    valueColor:
-                                    AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
+                                  color: Color(0xFFEE4400),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Center(child: Text('OFFLINE')),
+                                      SizedBox(width: 8.0),
+                                      SizedBox(
+                                        width: 12.0,
+                                        height: 12.0,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.0,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          )),
+                                )),
                     ),
                   ),
                 ),
                 Expanded(
                   child: RefreshIndicator(
-                    onRefresh: () => _bloc.fetchPostList(),
+                    onRefresh: () {
+                      postList.clear();
+                      return _bloc.fetchPostList(true);
+                    },
                     child: StreamBuilder<ApiResponse<List<Post>>>(
                       stream: _bloc.movieListStream,
                       builder: (context, snapshot) {
@@ -128,24 +141,28 @@ class _MainBodyState extends State<MainBody> {
                                   loadingMessage: snapshot.data.message);
                               break;
                             case Status.COMPLETED:
-                              _save(snapshot.data.data);
+                              print("completed");
+                              postList.addAll(snapshot.data.data);
+                              _save(postList);
+                              print("after add all: " +
+                                  postList.length.toString());
                               return PostList(
-                                postList: snapshot.data.data,
-                              );
+                                  postList: postList,
+                                  controller: _scrollController);
                               break;
                             case Status.ERROR:
-                              if (postList == null) {
-                                postList = List<Post>();
-                                updateListView();
-                              }
+                              updateListView();
                               print("list of posts: " + count.toString());
                               if (count == 0) {
                                 return Error(
                                   errorMessage: snapshot.data.message,
-                                  onRetryPressed: () => _bloc.fetchPostList(),
+                                  onRetryPressed: () =>
+                                      _bloc.fetchPostList(true),
                                 );
                               } else {
-                                return PostList(postList: postList);
+                                return PostList(
+                                    postList: postList,
+                                    controller: _scrollController);
                               }
 
                               break;
@@ -171,9 +188,9 @@ class _MainBodyState extends State<MainBody> {
   }
 
   void _save(List<Post> posts) async {
-    await helper.deleteAllPosts();
+   // await helper.deleteAllPosts();
     for (int i = 0; i <= posts.length; i++) {
-      await helper.insertPost(posts[i]);
+      await helper.updatePost(posts[i]);
     }
     print("list of offline: " + posts.length.toString());
   }
@@ -193,42 +210,24 @@ class _MainBodyState extends State<MainBody> {
   }
 }
 
-class TrendingList extends StatelessWidget {
-  final List<Post> postList;
-
-  const TrendingList({Key key, this.postList}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: postList.length,
-      itemBuilder: (context, index) {
-        return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TrendCard(
-                context,
-                postList[index].post_txt,
-                postList[index].post_location,
-                postList[index].post_time,
-                postList[index].post_img,
-                postList[index].post_comments,
-                postList[index].post_stars));
-      },
-    );
-  }
-}
-
 class PostList extends StatelessWidget {
   final List<Post> postList;
+  final ScrollController controller;
 
-  const PostList({Key key, this.postList}) : super(key: key);
+  const PostList({Key key, this.postList, this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: postList.length,
+      itemCount: postList.length + 1,
+      controller: controller,
       itemBuilder: (context, index) {
+        if (index == postList.length) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
         return GestureDetector(
           onTap: () {
             Navigator.push(

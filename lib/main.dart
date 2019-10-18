@@ -57,7 +57,6 @@ class _MyAppState extends State<MyApp> {
       update(token);
     });
 
-
     SharedPreferencesHelper.getLanguageCode().then((onValue) {
       if (onValue == "en") {
         this.isEnglish = true;
@@ -81,17 +80,13 @@ class _MyAppState extends State<MyApp> {
     var iOS = new IOSNotificationDetails();
     var platform = new NotificationDetails(android, iOS);
     if (Theme.of(context).platform == TargetPlatform.iOS) {
-
-      await flutterLocalNotificationsPlugin.show(
-          0, msg['aps']['alert']['title'],msg['aps']['alert']['title'], platform);
+      await flutterLocalNotificationsPlugin.show(0,
+          msg['aps']['alert']['title'], msg['aps']['alert']['title'], platform);
     } else {
-
-      await flutterLocalNotificationsPlugin.show(
-          0,  msg['notification']['title'], msg['notification']['body'], platform);
+      await flutterLocalNotificationsPlugin.show(0,
+          msg['notification']['title'], msg['notification']['body'], platform);
     }
   }
-
-
 
   update(String token) {
     SharedPreferencesHelper.setSession(Constants.TOKEN, token);
@@ -149,14 +144,15 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     SharedPreferencesHelper.getUserLoggedIn().then((onValue) {
+      this.isLoggedIn = onValue;
       setState(() {
-        this.isLoggedIn = onValue;
+        if (isLoggedIn) {
+          return new HomePage();
+        } else {
+          return new LoginPage();
+        }
       });
     });
-    if (isLoggedIn) {
-      return new HomePage();
-    } else {
-      return new LoginPage();
-    }
+    return LoginPage();
   }
 }
