@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:e2_design/models/notifications_response.dart';
-import 'package:e2_design/repositories/post_repository.dart';
+import 'package:e2_design/repositories/base_repository.dart';
 
 import '../api_response.dart';
 

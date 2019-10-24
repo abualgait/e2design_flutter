@@ -4,5 +4,15 @@
   "app_notification": "Notifications",
   "app_add_new_post": "New Post",
   "app_settings": "Settings",
+  "app_report": "Report",
+
+
+  "report_sexual_or_immoral_content": "Sexual or immoral content",
+  "report_stupid_not_relevant_question": "Stupid / not relevant question",
+  "report_spam_or_misleading": "Spam or misleading",
+  "report_illegal_or_prohibited_items": "illegal or prohibited items",
+  "report_hatful_or_abuse_content": "Hatful or abuse content",
+
+  "app_activities": "Activities",
   "app_login": "Login"
 }

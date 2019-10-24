@@ -37,7 +37,7 @@ class SharedPreferencesHelper {
   static Future<bool> getUserLoggedIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    return prefs.getBool(_kUserCode) ?? false;
+    return prefs.getBool(_kUserCode)  ;
   }
 
 

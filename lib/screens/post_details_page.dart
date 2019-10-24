@@ -85,11 +85,11 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                           elevation: 5,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(20.0),
+                                            BorderRadius.circular(20.0),
                                           ),
                                           semanticContainer: true,
                                           clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
+                                          Clip.antiAliasWithSaveLayer,
                                           child: TextField(
                                             decoration: new InputDecoration(
                                                 border: InputBorder.none,
@@ -100,7 +100,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                                     top: 11,
                                                     right: 15),
                                                 hintText:
-                                                    'Responde to your people'),
+                                                'Responde to your people'),
                                           ),
                                         ),
                                       ),
@@ -164,6 +164,7 @@ class PostDetailsWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           if (index == 0) {
             return PostCard(
+                null,
                 context,
                 postDetailsObj.post_txt,
                 postDetailsObj.post_location,

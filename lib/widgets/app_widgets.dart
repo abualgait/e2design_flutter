@@ -49,139 +49,154 @@ Widget TrendCard(BuildContext context, var post_txt, var post_location,
   );
 }
 
-Widget PostCard(BuildContext context, var post_txt, var post_location,
-    var post_time, var post_img, var post_comments, var post_stars) {
-  return Padding(
-      padding: EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")),
+class PostCard extends StatelessWidget {
+  Function onTap;
+  var post_txt, post_location, post_time, post_img, post_comments, post_stars;
+  BuildContext context;
+
+  PostCard(this.onTap(), this.context, this.post_txt, this.post_location,
+      this.post_time, this.post_img, this.post_comments, this.post_stars);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        child: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")),
+                      ),
                     ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text("Muhammad"),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          post_time,
-                          style: TextStyle(fontSize: 10, color: Colors.grey),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text("Muhammad"),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          post_location,
-                          style: TextStyle(fontSize: 10, color: Colors.grey),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text(
+                            post_time,
+                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              Icon(
-                Icons.more_horiz,
-                color: Colors.grey,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Container(
-            height: 300.0,
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(.4),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 10.0))
-            ]),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              child: CachedNetworkImage(
-                fit: BoxFit.fill,
-                imageUrl: post_img,
-                placeholder: (context, url) => Image.asset(
-                  "assets/images/image_placeholder.png",
-                  fit: BoxFit.fill,
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text(
+                            post_location,
+                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
-                errorWidget: (context, url, error) => new Icon(Icons.error),
-                fadeInDuration: Duration(seconds: 1),
-                fadeOutDuration: Duration(seconds: 1),
+                Visibility(
+                  visible: true,
+                  child: IconButton(
+                      onPressed: () {
+                        onTap();
+                      },
+                      icon: Icon(
+                        Icons.more_horiz,
+                        color: Colors.grey,
+                      )),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Container(
+              height: 300.0,
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(.4),
+                    blurRadius: 10.0,
+                    offset: Offset(0.0, 10.0))
+              ]),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                child: CachedNetworkImage(
+                  fit: BoxFit.fill,
+                  imageUrl: post_img,
+                  placeholder: (context, url) => Image.asset(
+                    "assets/images/image_placeholder.png",
+                    fit: BoxFit.fill,
+                  ),
+                  errorWidget: (context, url, error) => new Icon(Icons.error),
+                  fadeInDuration: Duration(seconds: 1),
+                  fadeOutDuration: Duration(seconds: 1),
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.send, color: Colors.grey, size: 20),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text(
-                        "5",
-                        style: TextStyle(fontSize: 10, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.favorite, color: Colors.red, size: 20),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text(
-                        "30",
-                        style: TextStyle(fontSize: 10, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    width: 9,
-                  ),
-                  Icon(Icons.share, color: Colors.grey, size: 20),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          MyPeople(),
-          Text(
-            post_txt,
-
-          ),
-        ],
-      ));
+            SizedBox(
+              height: 15,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.send, color: Colors.grey, size: 20),
+                        SizedBox(
+                          width: 3,
+                        ),
+                        Text(
+                          "5",
+                          style: TextStyle(fontSize: 10, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.favorite, color: Colors.red, size: 20),
+                        SizedBox(
+                          width: 3,
+                        ),
+                        Text(
+                          "30",
+                          style: TextStyle(fontSize: 10, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 9,
+                    ),
+                    Icon(Icons.share, color: Colors.grey, size: 20),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            MyPeople(),
+            Text(
+              post_txt,
+            ),
+          ],
+        ));
+  }
 }
 
 Widget CommentCard(

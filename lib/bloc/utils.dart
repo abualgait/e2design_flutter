@@ -16,7 +16,9 @@ ThemeData buildLightTheme(double fontSize) {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
     primaryColor: Colors.white,
-    accentColor: Colors.black,
+    primaryColorDark: Colors.white,
+    backgroundColor: Colors.white70,
+    accentColor: Colors.blueAccent,
     canvasColor: Colors.transparent,
     primaryIconTheme: IconThemeData(color: Colors.black),
     textTheme: TextTheme(
@@ -52,7 +54,7 @@ ThemeData buildDarkTheme(double fontSize) {
   final ThemeData base = ThemeData.dark();
   return base.copyWith(
     primaryColor: Color(0xff323639),
-    accentColor: Colors.blue,
+    accentColor: Colors.blueAccent,
     canvasColor: Colors.transparent,
     primaryIconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(

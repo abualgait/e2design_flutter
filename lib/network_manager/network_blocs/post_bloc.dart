@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:e2_design/models/post_response.dart';
-import 'package:e2_design/repositories/post_repository.dart';
+import 'package:e2_design/repositories/base_repository.dart';
 
 import '../api_response.dart';
 
@@ -10,14 +10,14 @@ class PostBloc {
 
   StreamController _movieListController;
 
-  StreamSink<ApiResponse<List<Post>>> get movieListSink =>
+  StreamSink<ApiResponse<PostResponse>> get movieListSink =>
       _movieListController.sink;
 
-  Stream<ApiResponse<List<Post>>> get movieListStream =>
+  Stream<ApiResponse<PostResponse>> get movieListStream =>
       _movieListController.stream;
 
   PostBloc() {
-    _movieListController = StreamController<ApiResponse<List<Post>>>();
+    _movieListController = StreamController<ApiResponse<PostResponse>>();
     _baseRepository = BaseRepository();
     //fetchPostList(true);
   }
@@ -25,8 +25,8 @@ class PostBloc {
   fetchPostList(bool isFirstTime) async {
     if (isFirstTime) movieListSink.add(ApiResponse.loading('Fetching Data'));
     try {
-      List<Post> posts = await _baseRepository.fetchPostList();
-      movieListSink.add(ApiResponse.completed(posts));
+      PostResponse response = await _baseRepository.fetchPostList();
+      movieListSink.add(ApiResponse.completed(response));
 
     } catch (e) {
       movieListSink.add(ApiResponse.error(e.toString()));
@@ -34,10 +34,7 @@ class PostBloc {
     }
   }
 
-  Future<List<Post>> fetchMoreData(bool isFirstTime) async {
-    if (isFirstTime) movieListSink.add(ApiResponse.loading('Fetching Data'));
-    return await _baseRepository.fetchPostList();
-  }
+
 
   dispose() {
     _movieListController?.close();

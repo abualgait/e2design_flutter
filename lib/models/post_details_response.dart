@@ -1,11 +1,24 @@
-class PostDetailsResponse {
+import 'normal_response.dart';
+
+class PostDetailsResponse extends NormalResponse {
   PostDetailsObj results;
 
-  PostDetailsResponse.fromJson(Map<String, dynamic> json) {
-    if (json['post_details'] != null) {
-      results = new PostDetailsObj();
-      results = (new PostDetailsObj.fromJson(json['post_details']));
-    }
+  PostDetailsResponse(
+      int next_offset, String status, String message, this.results)
+      : super(next_offset, status, message);
+
+  factory PostDetailsResponse.fromJson(Map<String, dynamic> json) {
+    final normalresponse = NormalResponse.fromJson(json);
+//    if (json['post_details'] != null) {
+//      results = new PostDetailsObj();
+//      results = (new PostDetailsObj.fromJson(json['post_details']));
+//    }
+
+    return PostDetailsResponse(
+        normalresponse.next_offset,
+        normalresponse.status,
+        normalresponse.message,
+        new PostDetailsObj.fromJson(json['post_details']));
   }
 }
 
@@ -65,7 +78,7 @@ class PostDetailsObj {
   }
 }
 
-class Comment{
+class Comment {
   int _id;
   String comment_avatar;
   String comment_name;
@@ -92,7 +105,6 @@ class Comment{
     comment_likes = json['comment_likes'];
     comment_comments = json['comment_comments'];
     comment_share = json['comment_share'];
-
   }
 
   // Convert a Note object into a Map object
@@ -112,7 +124,6 @@ class Comment{
     map['comment_comments'] = comment_comments;
     map['comment_share'] = comment_share;
 
-
     return map;
   }
 
@@ -130,5 +141,4 @@ class Comment{
     this.comment_comments = map['comment_comments'];
     this.comment_share = map['comment_share'];
   }
-
 }

@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:e2_design/base_widgets/base_network_widgets.dart';
+import 'package:e2_design/bloc/change_theme_bloc.dart';
+import 'package:e2_design/bloc/change_theme_state.dart';
 import 'package:e2_design/db_helpers/posts_helper.dart';
+import 'package:e2_design/language_manager/AppLocalizations.dart';
 import 'package:e2_design/models/post_response.dart';
 import 'package:e2_design/network_manager/api_response.dart';
 import 'package:e2_design/network_manager/network_blocs/post_bloc.dart';
@@ -9,6 +12,7 @@ import 'package:e2_design/screens/post_details_page.dart';
 import 'package:e2_design/widgets/app_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -131,7 +135,7 @@ class _MainBodyState extends State<MainBody> {
                       postList.clear();
                       return _bloc.fetchPostList(true);
                     },
-                    child: StreamBuilder<ApiResponse<List<Post>>>(
+                    child: StreamBuilder<ApiResponse<PostResponse>>(
                       stream: _bloc.movieListStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -142,7 +146,8 @@ class _MainBodyState extends State<MainBody> {
                               break;
                             case Status.COMPLETED:
                               print("completed");
-                              postList.addAll(snapshot.data.data);
+                              print("message: " + snapshot.data.data.message);
+                              postList.addAll(snapshot.data.data.results);
                               _save(postList);
                               print("after add all: " +
                                   postList.length.toString());
@@ -188,7 +193,7 @@ class _MainBodyState extends State<MainBody> {
   }
 
   void _save(List<Post> posts) async {
-   // await helper.deleteAllPosts();
+    // await helper.deleteAllPosts();
     for (int i = 0; i <= posts.length; i++) {
       await helper.updatePost(posts[i]);
     }
@@ -218,6 +223,7 @@ class PostList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    VoidCallback ontapreport;
     return ListView.builder(
       itemCount: postList.length + 1,
       controller: controller,
@@ -239,6 +245,7 @@ class PostList extends StatelessWidget {
           child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: PostCard(
+                  () => {flagSelected(index, context)},
                   context,
                   postList[index].post_txt,
                   postList[index].post_location,
@@ -247,6 +254,89 @@ class PostList extends StatelessWidget {
                   postList[index].post_comments,
                   postList[index].post_stars)),
         );
+      },
+    );
+  }
+
+  flagSelected(int newIndex, BuildContext context) {
+    var choice1 = AppLocalizations.of(context)
+        .translate('report_sexual_or_immoral_content');
+    var choice2 = AppLocalizations.of(context)
+        .translate('report_stupid_not_relevant_question');
+    var choice3 =
+        AppLocalizations.of(context).translate('report_spam_or_misleading');
+    var choice4 = AppLocalizations.of(context)
+        .translate('report_illegal_or_prohibited_items');
+    var choice5 = AppLocalizations.of(context)
+        .translate('report_hatful_or_abuse_content');
+
+    var reports = [
+      choice1,
+      choice2,
+      choice3,
+      choice4,
+      choice5
+    ];
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return BlocBuilder(
+            bloc: changeThemeBloc,
+            builder: (BuildContext context, ChangeThemeState state) {
+              return AlertDialog(
+                backgroundColor: state.themeData.primaryColor,
+                title: Text(
+                  'Report Question',
+                  style: state.themeData.textTheme.body1,
+                ),
+                content: SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: 4,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          height: 50,
+                          child: InkWell(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(reports[index],
+                                  style: state.themeData.textTheme.body2),
+                            ),
+                            onTap: () {
+                              switch (index) {
+                                case 0:
+                                  print(reports[index]);
+
+                                  break;
+
+                                case 1:
+                                  print(reports[index]);
+                                  break;
+
+                                case 2:
+                                  print(reports[index]);
+                                  break;
+
+                                case 3:
+                                  print(reports[index]);
+                                  break;
+                              }
+
+                              Navigator.pop(context);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              );
+            });
       },
     );
   }

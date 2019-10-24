@@ -4,5 +4,14 @@
   "app_notification": "التنبيهات",
   "app_add_new_post": "أطرح سؤالاً",
   "app_settings": "الاعدادات",
+  "app_report": "تبليغ",
+
+  "report_sexual_or_immoral_content": "محتوي جنسي او غير اخلاقي",
+  "report_stupid_not_relevant_question": "غير لائق",
+  "report_spam_or_misleading": "مضلل",
+  "report_illegal_or_prohibited_items": "ممنوع او محذور",
+  "report_hatful_or_abuse_content": "كراهية وعنف",
+
+  "app_activities": "النشاطات",
   "app_login": "دخول"
 }

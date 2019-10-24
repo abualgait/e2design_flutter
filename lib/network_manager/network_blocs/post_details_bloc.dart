@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:e2_design/models/post_details_response.dart';
 import 'package:e2_design/models/post_response.dart';
-import 'package:e2_design/repositories/post_repository.dart';
+import 'package:e2_design/repositories/base_repository.dart';
 
 import '../api_response.dart';
 

@@ -1,15 +1,16 @@
 import 'package:e2_design/base_classes/shaerd_prefs_helper.dart';
 import 'package:e2_design/bloc/change_theme_bloc.dart';
 import 'package:e2_design/bloc/change_theme_state.dart';
+import 'package:e2_design/language_manager/AppLocalizations.dart';
 import 'package:e2_design/screens/settings_page.dart';
 import 'package:e2_design/widgets/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import 'activities_page.dart';
 import 'add_new_post_page.dart';
 import 'auth/login.dart';
-import 'main_drawer.dart';
 import 'main_page.dart';
 import 'notification_page.dart';
 
@@ -89,7 +90,7 @@ class _HomePageState extends State<HomePage>
                   backgroundColor: Colors.white10,
                   body: Center(
                       child: Stack(
-                    children: <Widget>[PageMenu(), MasterPage()],
+                    children: <Widget>[PageMenu(state), MasterPage(state)],
                   ))));
         });
   }
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage>
         indexpage = NotificationPage();
         break;
       case SCREENS.ACTIVITES:
-        indexpage = MainDrawer();
+        indexpage = ActivityPage();
         break;
       case SCREENS.BIO:
         indexpage = NotificationPage();
@@ -151,7 +152,7 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  Widget MasterPage() {
+  Widget MasterPage(ChangeThemeState state) {
     if (firstTime) setIndexPage(SCREENS.MAINBODY);
     var screen = MediaQuery.of(context).size;
     return AnimatedPositioned(
@@ -171,7 +172,7 @@ class _HomePageState extends State<HomePage>
             child: Material(
               animationDuration: duration,
               borderRadius: BorderRadius.all(Radius.circular(40)),
-              elevation: 8,
+              elevation: 20,
               child: BlocBuilder(
                 bloc: changeThemeBloc,
                 builder: (BuildContext context, ChangeThemeState state) {
@@ -217,7 +218,7 @@ class _HomePageState extends State<HomePage>
                         ],
                       ),
                       floatingActionButton: FloatingActionButton(
-                        backgroundColor: Colors.pink,
+                        backgroundColor: state.themeData.textTheme.body1.color,
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -251,9 +252,9 @@ class _HomePageState extends State<HomePage>
     }
   }
 
-  Widget PageMenu() {
+  Widget PageMenu(ChangeThemeState state) {
     return Container(
-      color: Color.fromRGBO(0, 65, 109, 108),
+      color: state.themeData.primaryColor, //Color.fromRGBO(0, 65, 109, 108),
       child: Padding(
         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
         child: Column(
@@ -284,7 +285,7 @@ class _HomePageState extends State<HomePage>
                   children: <Widget>[
                     Text(
                       "Muhammad Sayed",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
+                      style: TextStyle(fontSize: 14),
                     ),
                     SizedBox(
                       height: 5,
@@ -324,10 +325,13 @@ class _HomePageState extends State<HomePage>
                         Row(
                           children: <Widget>[
                             SizedBox(
-                                height: 5,
-                                width: 5,
+                                height: 7,
+                                width: 7,
                                 child: Container(
-                                  color: Colors.yellowAccent,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.blueGrey),
+                                    color: Colors.yellowAccent,
+                                  ),
                                 )),
                             SizedBox(
                               width: 5,
@@ -341,10 +345,13 @@ class _HomePageState extends State<HomePage>
                         Row(
                           children: <Widget>[
                             SizedBox(
-                                height: 5,
-                                width: 5,
+                                height: 7,
+                                width: 7,
                                 child: Container(
-                                  color: Colors.grey,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.blueGrey),
+                                    color: Colors.grey,
+                                  ),
                                 )),
                             SizedBox(
                               width: 5,
@@ -379,7 +386,6 @@ class _HomePageState extends State<HomePage>
                   },
                   icon: Icon(
                     Icons.dashboard,
-                    color: Colors.white,
                   ),
                 ),
                 SizedBox(
@@ -387,7 +393,6 @@ class _HomePageState extends State<HomePage>
                 ),
                 Text(
                   "Timline",
-                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -404,7 +409,6 @@ class _HomePageState extends State<HomePage>
                   },
                   icon: Icon(
                     Icons.notifications,
-                    color: Colors.white,
                   ),
                 ),
                 SizedBox(
@@ -412,7 +416,6 @@ class _HomePageState extends State<HomePage>
                 ),
                 Text(
                   "Notifications",
-                  style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(width: 5),
                 Container(
@@ -429,14 +432,13 @@ class _HomePageState extends State<HomePage>
                   onPressed: () {
                     setState(() {
                       firstTime = false;
-                      setIndexPage(SCREENS.MAINBODY);
-                      appbartitle = "Activites";
+                      setIndexPage(SCREENS.ACTIVITES);
+                      appbartitle =   AppLocalizations.of(context).translate('app_activities');
                       _onPressedMenu();
                     });
                   },
                   icon: Icon(
                     Icons.history,
-                    color: Colors.white,
                   ),
                 ),
                 SizedBox(
@@ -444,7 +446,6 @@ class _HomePageState extends State<HomePage>
                 ),
                 Text(
                   "Activites",
-                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -461,7 +462,6 @@ class _HomePageState extends State<HomePage>
                   },
                   icon: Icon(
                     Icons.info_outline,
-                    color: Colors.white,
                   ),
                 ),
                 SizedBox(
@@ -469,7 +469,6 @@ class _HomePageState extends State<HomePage>
                 ),
                 Text(
                   "Bio",
-                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -486,7 +485,6 @@ class _HomePageState extends State<HomePage>
                   },
                   icon: Icon(
                     Icons.help,
-                    color: Colors.white,
                   ),
                 ),
                 SizedBox(
@@ -494,7 +492,6 @@ class _HomePageState extends State<HomePage>
                 ),
                 Text(
                   "Help",
-                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -511,7 +508,6 @@ class _HomePageState extends State<HomePage>
                   },
                   icon: Icon(
                     Icons.person,
-                    color: Colors.white,
                   ),
                 ),
                 SizedBox(
@@ -519,7 +515,6 @@ class _HomePageState extends State<HomePage>
                 ),
                 Text(
                   "Profile",
-                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -534,15 +529,15 @@ class _HomePageState extends State<HomePage>
                     children: <Widget>[
                       Expanded(
                           //invite a friend and get 100 points
-                          child: buildFlatButtonWidget(Colors.redAccent,
-                              "invite a friend and get 100 points",10)),
+                          child: buildFlatButtonWidget(
+                              state, "invite a friend and get 100 points", 10)),
                     ],
                   ),
                   //have an idea, great talk to us
                   Row(children: <Widget>[
                     Expanded(
-                        child: buildFlatButtonWidget(Colors.deepPurpleAccent,
-                            "have an idea, great talk to us",10)),
+                        child: buildFlatButtonWidget(
+                            state, "have an idea, great talk to us", 10)),
                   ]),
                 ],
               ),
@@ -564,7 +559,6 @@ class _HomePageState extends State<HomePage>
                       },
                       icon: Icon(
                         Icons.settings,
-                        color: Colors.white,
                       ),
                     ),
                     SizedBox(
@@ -572,7 +566,6 @@ class _HomePageState extends State<HomePage>
                     ),
                     Text(
                       "Settings",
-                      style: TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
@@ -583,7 +576,7 @@ class _HomePageState extends State<HomePage>
                   width: 1.5,
                   height: 20,
                   child: Container(
-                    color: Colors.white,
+                    color: state.themeData.textTheme.body1.color,
                   ),
                 ),
                 SizedBox(
@@ -605,7 +598,6 @@ class _HomePageState extends State<HomePage>
                       },
                       icon: Icon(
                         Icons.exit_to_app,
-                        color: Colors.white,
                       ),
                     ),
                     SizedBox(
@@ -613,7 +605,6 @@ class _HomePageState extends State<HomePage>
                     ),
                     Text(
                       "Log out",
-                      style: TextStyle(color: Colors.white),
                     ),
                   ],
                 )

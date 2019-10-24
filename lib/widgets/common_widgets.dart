@@ -61,15 +61,15 @@ Widget TitleImageWidget(
   }
 }
 
-Widget buildFlatButtonWidget(Color color, String txt, double fontsize) {
+Widget buildFlatButtonWidget(  ChangeThemeState state, String txt, double fontsize) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 5.0, left: 5.0, right: 5.0),
     child: FlatButton(
-      color: color,
+      color: state.themeData.textTheme.body1.color,
       shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(5.0)),
       onPressed: () {},
-      textColor: Colors.white,
+      textColor: state.themeData.primaryColorDark,
       child: Padding(
         padding: const EdgeInsets.all(2.0),
         child: Text(

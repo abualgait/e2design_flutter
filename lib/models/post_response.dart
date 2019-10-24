@@ -1,15 +1,18 @@
-class PostResponse {
-  List<dynamic> totalResults;
+import 'normal_response.dart';
+import 'package:e2_design/utils/Utils.dart';
+
+class PostResponse extends NormalResponse {
+  List<Post> totalResults;
   List<Post> results;
 
-  PostResponse.fromJson(Map<String, dynamic> json) {
-    totalResults = json['list'];
-    if (json['list'] != null) {
-      results = new List<Post>();
-      json['list'].forEach((v) {
-        results.add(new Post.fromJson(v));
-      });
-    }
+  PostResponse(int next_offset, String status, String message, this.results)
+      : super(next_offset, status, message);
+
+  factory PostResponse.fromJson(Map<String, dynamic> json) {
+
+    final normalresponse = NormalResponse.fromJson(json);
+    return PostResponse(normalresponse.next_offset, normalresponse.status,
+        normalresponse.message, getListFromDynamic(json['list']));
   }
 }
 
@@ -21,7 +24,6 @@ class Post {
   String post_comments;
   String post_time;
   String post_stars;
-
 
   int get id => _id;
 

@@ -18,13 +18,13 @@ class Error extends StatelessWidget {
             errorMessage,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.lightGreen,
+
               fontSize: 18,
             ),
           ),
           SizedBox(height: 8),
           RaisedButton(
-            color: Colors.lightGreen,
+
             child: Text('Retry', style: TextStyle(color: Colors.white)),
             onPressed: onRetryPressed,
           )
@@ -49,13 +49,13 @@ class Loading extends StatelessWidget {
             loadingMessage,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.lightGreen,
+
               fontSize: 24,
             ),
           ),
           SizedBox(height: 24),
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.lightGreen),
+
           ),
         ],
       ),

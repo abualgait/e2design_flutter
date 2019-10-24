@@ -1,4 +1,5 @@
 import 'package:e2_design/screens/auth/login.dart';
+import 'package:e2_design/screens/auth/pincode.dart';
 import 'package:e2_design/screens/home.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -137,22 +138,27 @@ class RootPage extends StatefulWidget {
 enum AuthStatus { GUEST_MODE, LOGGED_IN }
 
 class _RootPageState extends State<RootPage> {
-  AuthStatus authStatus = AuthStatus.GUEST_MODE;
-
-  bool isLoggedIn = false;
+  AuthStatus authStatus;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     SharedPreferencesHelper.getUserLoggedIn().then((onValue) {
-      this.isLoggedIn = onValue;
       setState(() {
-        if (isLoggedIn) {
-          return new HomePage();
+        if (onValue) {
+          authStatus = AuthStatus.LOGGED_IN;
         } else {
-          return new LoginPage();
+          authStatus = AuthStatus.GUEST_MODE;
         }
       });
     });
-    return LoginPage();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (authStatus == AuthStatus.GUEST_MODE)
+      return new LoginPage();
+    else
+      return new PinCodePage();
   }
 }
