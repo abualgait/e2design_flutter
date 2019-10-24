@@ -263,7 +263,7 @@ class _HomePageState extends State<HomePage>
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Spacer(
-              flex: 3,
+              flex: 5,
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -367,159 +367,194 @@ class _HomePageState extends State<HomePage>
                   ],
                 )),
             SizedBox(
-              height: 5,
+              height: 10,
             ),
-
+            Container(
+              width: MediaQuery.of(context).size.width * 0.60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[Text("129"), Text("Questions")],
+                  ),
+                  Column(
+                    children: <Widget>[Text("98%"), Text("Accurate")],
+                  ),
+                  Column(
+                    children: <Widget>[Text("450"), Text("Answers")],
+                  )
+                ],
+              ),
+            ),
             SizedBox(
-              height: 20,
+              height: 30,
             ),
-            Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      firstTime = false;
-                      setIndexPage(SCREENS.MAINBODY);
-                      appbartitle = "TimeLine";
-                      _onPressedMenu();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.dashboard,
-                  ),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  firstTime = false;
+                  setIndexPage(SCREENS.MAINBODY);
+                  appbartitle = "TimeLine";
+                  _onPressedMenu();
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.dashboard,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Timline",
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Timline",
-                ),
-              ],
+              ),
             ),
-            Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      firstTime = false;
-                      setIndexPage(SCREENS.NOTIFICATIONS);
-                      appbartitle = "Notifications";
-                      _onPressedMenu();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.notifications,
-                  ),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  firstTime = false;
+                  setIndexPage(SCREENS.NOTIFICATIONS);
+                  appbartitle = "Notifications";
+                  _onPressedMenu();
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.notifications,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Notifications",
+                    ),
+                    SizedBox(width: 5),
+                    Container(
+                      height: 5,
+                      width: 5,
+                      decoration: BoxDecoration(
+                          color: Colors.red, shape: BoxShape.circle),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Notifications",
-                ),
-                SizedBox(width: 5),
-                Container(
-                  height: 5,
-                  width: 5,
-                  decoration:
-                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                ),
-              ],
+              ),
             ),
-            Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      firstTime = false;
-                      setIndexPage(SCREENS.ACTIVITES);
-                      appbartitle =   AppLocalizations.of(context).translate('app_activities');
-                      _onPressedMenu();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.history,
-                  ),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  firstTime = false;
+                  setIndexPage(SCREENS.ACTIVITES);
+                  appbartitle =
+                      AppLocalizations.of(context).translate('app_activities');
+                  _onPressedMenu();
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.history,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Activites",
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Activites",
-                ),
-              ],
+              ),
             ),
-            Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      firstTime = false;
-                      setIndexPage(SCREENS.MAINBODY);
-                      appbartitle = "Bio";
-                      _onPressedMenu();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.info_outline,
-                  ),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  firstTime = false;
+                  setIndexPage(SCREENS.MAINBODY);
+                  appbartitle = "Bio";
+                  _onPressedMenu();
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.info_outline,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Bio",
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Bio",
-                ),
-              ],
+              ),
             ),
-            Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      firstTime = false;
-                      setIndexPage(SCREENS.MAINBODY);
-                      appbartitle = "Help";
-                      _onPressedMenu();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.help,
-                  ),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  firstTime = false;
+                  setIndexPage(SCREENS.MAINBODY);
+                  appbartitle = "Help";
+                  _onPressedMenu();
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.help,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Help",
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Help",
-                ),
-              ],
+              ),
             ),
-            Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      firstTime = false;
-                      setIndexPage(SCREENS.MAINBODY);
-                      appbartitle = "Profile";
-                      _onPressedMenu();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.person,
-                  ),
+            InkWell(
+              onTap: () {
+                setState(() {
+                  firstTime = false;
+                  setIndexPage(SCREENS.MAINBODY);
+                  appbartitle = "Profile";
+                  _onPressedMenu();
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.person,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Profile",
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Profile",
-                ),
-              ],
+              ),
             ),
             Spacer(
-              flex: 2,
+              flex: 1,
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.60,

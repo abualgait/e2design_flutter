@@ -1,5 +1,4 @@
 import 'package:e2_design/screens/auth/login.dart';
-import 'package:e2_design/screens/auth/pincode.dart';
 import 'package:e2_design/screens/home.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -159,6 +158,6 @@ class _RootPageState extends State<RootPage> {
     if (authStatus == AuthStatus.GUEST_MODE)
       return new LoginPage();
     else
-      return new PinCodePage();
+      return new HomePage();
   }
 }
