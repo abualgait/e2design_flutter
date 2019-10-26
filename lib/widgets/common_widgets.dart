@@ -56,7 +56,9 @@ Widget TitleImageWidget(
 //                                  .translate('app_title'),
       title,
       //"E2 Design",
-      style: state.themeData.textTheme.headline,
+      style: TextStyle(color:  state.themeData.textTheme.body1.color,
+          fontStyle: state.themeData.textTheme.body1.fontStyle, fontSize: 13)
+
     );
   }
 }

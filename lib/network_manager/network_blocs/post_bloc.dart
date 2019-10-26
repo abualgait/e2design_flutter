@@ -19,13 +19,13 @@ class PostBloc {
   PostBloc() {
     _movieListController = StreamController<ApiResponse<PostResponse>>();
     _baseRepository = BaseRepository();
-    //fetchPostList(true);
+
   }
 
-  fetchPostList(bool isFirstTime) async {
+  fetchPostList(bool isFirstTime,int page) async {
     if (isFirstTime) movieListSink.add(ApiResponse.loading('Fetching Data'));
     try {
-      PostResponse response = await _baseRepository.fetchPostList();
+      PostResponse response = await _baseRepository.fetchPostList(page);
       movieListSink.add(ApiResponse.completed(response));
 
     } catch (e) {

@@ -33,6 +33,8 @@ class _MainBodyState extends State<MainBody> {
 
   ScrollController _scrollController = ScrollController();
   int _currentMax = 10;
+  int page = 0;
+  int maxPagesNumber = 0;
 
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
@@ -59,12 +61,14 @@ class _MainBodyState extends State<MainBody> {
     _bloc = PostBloc();
     //startTimer();
     postList = List<Post>();
-    _bloc.fetchPostList(true);
+    _bloc.fetchPostList(true, page);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        print("get data");
-        _bloc.fetchPostList(false);
+        if (page <= maxPagesNumber) {
+          page++;
+          _bloc.fetchPostList(false, page);
+        }
       }
     });
   }
@@ -103,8 +107,11 @@ class _MainBodyState extends State<MainBody> {
                                   visible: ishideconnectivity,
                                   child: Container(
                                       width: MediaQuery.of(context).size.width,
-                                      child: Center(child: Text('ONLINE')),
-                                      color: Color(0xFF00EE44)),
+                                      child: Center(
+                                          child: Text(
+                                        'ONLINE',
+                                      )),
+                                      color: Colors.transparent),
                                 )
                               : Container(
                                   color: Color(0xFFEE4400),
@@ -133,7 +140,8 @@ class _MainBodyState extends State<MainBody> {
                   child: RefreshIndicator(
                     onRefresh: () {
                       postList.clear();
-                      return _bloc.fetchPostList(true);
+                      page = 0;
+                      return _bloc.fetchPostList(true, page);
                     },
                     child: StreamBuilder<ApiResponse<PostResponse>>(
                       stream: _bloc.movieListStream,
@@ -146,12 +154,12 @@ class _MainBodyState extends State<MainBody> {
                               break;
                             case Status.COMPLETED:
                               print("completed");
-                              print("message: " + snapshot.data.data.message);
+                              maxPagesNumber = snapshot.data.data.pages;
                               postList.addAll(snapshot.data.data.results);
-                              _save(postList);
+                              //_save(postList);
                               print("after add all: " +
                                   postList.length.toString());
-                              return PostList(
+                              return PostList(page, maxPagesNumber,
                                   postList: postList,
                                   controller: _scrollController);
                               break;
@@ -162,10 +170,10 @@ class _MainBodyState extends State<MainBody> {
                                 return Error(
                                   errorMessage: snapshot.data.message,
                                   onRetryPressed: () =>
-                                      _bloc.fetchPostList(true),
+                                      _bloc.fetchPostList(true, page),
                                 );
                               } else {
-                                return PostList(
+                                return PostList(page, maxPagesNumber,
                                     postList: postList,
                                     controller: _scrollController);
                               }
@@ -219,41 +227,55 @@ class PostList extends StatelessWidget {
   final List<Post> postList;
   final ScrollController controller;
 
-  const PostList({Key key, this.postList, this.controller}) : super(key: key);
+  final int currentpage;
+  final int maxpage;
+
+  const PostList(this.currentpage, this.maxpage,
+      {Key key, this.postList, this.controller})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    VoidCallback ontapreport;
     return ListView.builder(
       itemCount: postList.length + 1,
       controller: controller,
       itemBuilder: (context, index) {
         if (index == postList.length) {
+          if (this.currentpage >= maxpage)
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                      child: Text(
+                    'No More Data',
+                  )),
+                  color: Colors.transparent),
+            );
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(child: CircularProgressIndicator()),
           );
         }
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PostDetailsPage(postList[index].id)),
-            );
-          },
-          child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PostCard(
-                  () => {flagSelected(index, context)},
-                  context,
-                  postList[index].post_txt,
-                  postList[index].post_location,
-                  postList[index].post_time,
-                  postList[index].post_img,
-                  postList[index].post_comments,
-                  postList[index].post_stars)),
-        );
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PostDetailsPage(postList[index].uid)),
+              );
+            },
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: PostCard(
+                    () => {flagSelected(index, context)},
+                    context,
+                    postList[index].post_txt,
+                    postList[index].post_location,
+                    postList[index].post_time,
+                    postList[index].post_img,
+                    "",
+                    "")));
       },
     );
   }
@@ -270,13 +292,7 @@ class PostList extends StatelessWidget {
     var choice5 = AppLocalizations.of(context)
         .translate('report_hatful_or_abuse_content');
 
-    var reports = [
-      choice1,
-      choice2,
-      choice3,
-      choice4,
-      choice5
-    ];
+    var reports = [choice1, choice2, choice3, choice4, choice5];
 
     showDialog(
       context: context,

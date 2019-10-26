@@ -20,10 +20,10 @@ class PostDetailsBloc {
   PostDetailsBloc() {
     _postdetailsListController = StreamController<ApiResponse<PostDetailsObj>>();
     _baseRepository = BaseRepository();
-    fetchPostDetailsList(0);
+
   }
 
-  fetchPostDetailsList(int id) async {
+  fetchPostDetailsList(String id) async {
     postdetailsSink.add(ApiResponse.loading('Fetching Data'));
     try {
       PostDetailsObj postDetailsResponse = await _baseRepository.fetchPostDetails(id);

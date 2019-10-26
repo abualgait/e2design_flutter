@@ -13,10 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostDetailsPage extends StatefulWidget {
-  int _id = 0;
+  String uid = "";
 
-  PostDetailsPage(int id) {
-    this._id = id;
+  PostDetailsPage(String id) {
+    this.uid = id;
   }
 
   @override
@@ -30,6 +30,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
   void initState() {
     super.initState();
     _bloc = PostDetailsBloc();
+    _bloc.fetchPostDetailsList(widget.uid);
   }
 
   @override
@@ -42,17 +43,30 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
             child: Scaffold(
               appBar: buildMainAppBar(
                   state,
-                  false,
                   true,
+                  false,
                   context,
-                  AppLocalizations.of(context).translate('app_notification'),
+                  AppLocalizations.of(context).translate('app_comments'),
                   state.themeData.textTheme.headline,
                   state.themeData.primaryColor),
               backgroundColor: Colors.white10,
+              floatingActionButton:FloatingActionButton(
+                elevation: 5,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            RespondToPostPage(widget.uid)),
+                  );
+                },
+                backgroundColor: state.themeData.textTheme.body1.color,
+                child: Icon(Icons.send),
+              ),
               body: Container(
                 color: state.themeData.primaryColor,
                 child: RefreshIndicator(
-                  onRefresh: () => _bloc.fetchPostDetailsList(widget._id),
+                  onRefresh: () => _bloc.fetchPostDetailsList(widget.uid),
                   child: StreamBuilder<ApiResponse<PostDetailsObj>>(
                     stream: _bloc.postdetailsStream,
                     builder: (context, snapshot) {
@@ -72,65 +86,13 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                                 child: PostDetailsWidget(
                                     postDetailsObj: snapshot.data.data),
                               ),
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: SizedBox(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Card(
-                                          elevation: 5,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(20.0),
-                                          ),
-                                          semanticContainer: true,
-                                          clipBehavior:
-                                          Clip.antiAliasWithSaveLayer,
-                                          child: TextField(
-                                            decoration: new InputDecoration(
-                                                border: InputBorder.none,
-                                                focusedBorder: InputBorder.none,
-                                                contentPadding: EdgeInsets.only(
-                                                    left: 15,
-                                                    bottom: 11,
-                                                    top: 11,
-                                                    right: 15),
-                                                hintText:
-                                                'Responde to your people'),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: FloatingActionButton(
-                                          elevation: 5,
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      RespondToPostPage(2)),
-                                            );
-                                          },
-                                          backgroundColor: Colors.pink,
-                                          child: Icon(Icons.send),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
                             ]);
                             break;
                           case Status.ERROR:
                             return Error(
                               errorMessage: snapshot.data.message,
                               onRetryPressed: () =>
-                                  _bloc.fetchPostDetailsList(widget._id),
+                                  _bloc.fetchPostDetailsList(widget.uid),
                             );
                             break;
                         }
@@ -170,24 +132,24 @@ class PostDetailsWidget extends StatelessWidget {
                 postDetailsObj.post_location,
                 postDetailsObj.post_time,
                 postDetailsObj.post_img,
-                postDetailsObj.post_comments,
-                postDetailsObj.post_stars);
+                "",
+                "");
           } else {
             index = index - 1;
             return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CommentCard(
                     context,
-                    postDetailsObj.comments[index].comment_avatar,
-                    postDetailsObj.comments[index].comment_name,
-                    postDetailsObj.comments[index].comment_designation,
-                    postDetailsObj.comments[index].comment_time,
-                    postDetailsObj.comments[index].comment_percent,
-                    postDetailsObj.comments[index].comment_rate,
-                    postDetailsObj.comments[index].comment_txt,
-                    postDetailsObj.comments[index].comment_likes,
-                    postDetailsObj.comments[index].comment_comments,
-                    postDetailsObj.comments[index].comment_share));
+                    "",
+                    "",
+                    "",
+                    postDetailsObj.comments[index].createdAt,
+                    "",
+                    "",
+                    postDetailsObj.comments[index].comment,
+                    "",
+                    "",
+                    ""));
           }
         });
   }

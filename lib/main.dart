@@ -1,5 +1,6 @@
 import 'package:e2_design/screens/auth/login.dart';
 import 'package:e2_design/screens/home.dart';
+import 'package:e2_design/screens/onboarding_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -98,6 +99,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/landing': (BuildContext context) => HomePage(),
+        '/root': (BuildContext context) => MyApp(),
+
+      },
       // List all of the app's supported locales here
       supportedLocales: supportedLocale,
       // These delegates make sure that the localization data for the proper language is loaded
@@ -158,6 +164,6 @@ class _RootPageState extends State<RootPage> {
     if (authStatus == AuthStatus.GUEST_MODE)
       return new LoginPage();
     else
-      return new HomePage();
+      return new OnBoardingPage();
   }
 }

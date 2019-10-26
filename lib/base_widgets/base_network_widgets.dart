@@ -62,3 +62,28 @@ class Loading extends StatelessWidget {
     );
   }
 }
+
+
+class Splash extends StatelessWidget {
+  final String loadingMessage;
+
+  const Splash({Key key, this.loadingMessage}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset(
+            "assets/icon/logo.png"
+          ),
+          SizedBox(height: 24),
+          CircularProgressIndicator(
+
+          ),
+        ],
+      ),
+    );
+  }
+}

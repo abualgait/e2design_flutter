@@ -4,48 +4,48 @@ class PostDetailsResponse extends NormalResponse {
   PostDetailsObj results;
 
   PostDetailsResponse(
-      int next_offset, String status, String message, this.results)
+      int next_offset, bool status, String message, this.results)
       : super(next_offset, status, message);
 
   factory PostDetailsResponse.fromJson(Map<String, dynamic> json) {
     final normalresponse = NormalResponse.fromJson(json);
-//    if (json['post_details'] != null) {
-//      results = new PostDetailsObj();
-//      results = (new PostDetailsObj.fromJson(json['post_details']));
-//    }
 
     return PostDetailsResponse(
         normalresponse.next_offset,
         normalresponse.status,
         normalresponse.message,
-        new PostDetailsObj.fromJson(json['post_details']));
+        new PostDetailsObj.fromJson(json['data']));
   }
 }
 
 class PostDetailsObj {
   PostDetailsObj() {}
 
-  int _id;
-  var post_txt;
+  String _id;
+  String post_txt;
   String post_img;
   String post_location;
-  String post_comments;
+  String details;
+
+  // String post_comments;
   String post_time;
-  String post_stars;
+
+  // String post_stars;
   List<Comment> comments;
 
-  int get id => _id;
+  String get id => _id;
 
   PostDetailsObj.fromJson(Map<String, dynamic> json) {
-    _id = json['id'];
-    post_txt = json['post_txt'];
-    post_img = json['post_img'];
-    post_location = json['post_location'];
-    post_comments = json['post_comments'];
-    post_time = json['post_time'];
-    post_stars = json['post_stars'];
+    _id = json['uid'];
+    post_txt = json['question'];
+    post_img = json['image'];
+    post_location = json['location'];
+    details = json['details'];
+    // post_comments = json['post_comments'];
+    post_time = json['created_at'];
+    //  post_stars = json['post_stars'];
     comments = new List<Comment>();
-    json['comments_list'].forEach((v) {
+    json['comments'].forEach((v) {
       comments.add(new Comment.fromJson(v));
     });
   }
@@ -56,12 +56,13 @@ class PostDetailsObj {
     if (id != null) {
       map['id'] = _id;
     }
-    map['post_txt'] = post_txt;
-    map['post_img'] = post_img;
-    map['post_location'] = post_location;
-    map['post_comments'] = post_comments;
-    map['post_time'] = post_time;
-    map['post_stars'] = post_stars;
+    map['question'] = post_txt;
+    map['details'] = details;
+    map['image'] = post_img;
+    map['location'] = post_location;
+    //  map['post_comments'] = post_comments;
+    map['created_at'] = post_time;
+    // map['post_stars'] = post_stars;
 
     return map;
   }
@@ -69,42 +70,37 @@ class PostDetailsObj {
   // Extract a Note object from a Map object
   PostDetailsObj.fromMapObject(Map<String, dynamic> map) {
     this._id = map['id'];
-    this.post_txt = map['post_txt'];
-    this.post_img = map['post_img'];
-    this.post_location = map['post_location'];
-    this.post_comments = map['post_comments'];
-    this.post_time = map['post_time'];
-    this.post_stars = map['post_stars'];
+    this.post_txt = map['question'];
+    this.post_img = map['image'];
+    this.details = map['details'];
+    this.post_location = map['location'];
+    // this.post_comments = map['post_comments'];
+    this.post_time = map['created_at'];
+    //this.post_stars = map['post_stars'];
   }
 }
 
 class Comment {
-  int _id;
-  String comment_avatar;
-  String comment_name;
-  String comment_designation;
-  String comment_time;
-  String comment_percent;
-  String comment_rate;
-  String comment_txt;
-  String comment_likes;
-  String comment_comments;
-  String comment_share;
+  String _id;
+  String uid;
+  bool correct;
+  String question;
+  String createdAt;
+  String updatedAt;
+  String comment;
+  int v;
 
-  int get id => _id;
+  String get id => _id;
 
   Comment.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
-    comment_avatar = json['comment_avatar'];
-    comment_name = json['comment_name'];
-    comment_designation = json['comment_designation'];
-    comment_time = json['comment_time'];
-    comment_percent = json['comment_percent'];
-    comment_rate = json['comment_rate'];
-    comment_txt = json['comment_txt'];
-    comment_likes = json['comment_likes'];
-    comment_comments = json['comment_comments'];
-    comment_share = json['comment_share'];
+    uid = json['uid'];
+    correct = json['correct'];
+    question = json['question'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    comment = json['comment'];
+    v = json['__v'];
   }
 
   // Convert a Note object into a Map object
@@ -113,16 +109,13 @@ class Comment {
     if (id != null) {
       map['id'] = _id;
     }
-    map['comment_avatar'] = comment_avatar;
-    map['comment_name'] = comment_name;
-    map['comment_designation'] = comment_designation;
-    map['comment_time'] = comment_time;
-    map['comment_percent'] = comment_percent;
-    map['comment_rate'] = comment_rate;
-    map['comment_txt'] = comment_txt;
-    map['comment_likes'] = comment_likes;
-    map['comment_comments'] = comment_comments;
-    map['comment_share'] = comment_share;
+    map['uid'] = uid;
+    map['correct'] = correct;
+    map['question'] = question;
+    map['createdAt'] = createdAt;
+    map['updatedAt'] = updatedAt;
+    map['comment'] = comment;
+    map['__v'] = v;
 
     return map;
   }
@@ -130,15 +123,75 @@ class Comment {
   // Extract a Note object from a Map object
   Comment.fromMapObject(Map<String, dynamic> map) {
     this._id = map['id'];
-    this.comment_avatar = map['comment_avatar'];
-    this.comment_name = map['comment_name'];
-    this.comment_designation = map['comment_designation'];
-    this.comment_time = map['comment_time'];
-    this.comment_percent = map['comment_percent'];
-    this.comment_rate = map['comment_rate'];
-    this.comment_txt = map['comment_txt'];
-    this.comment_likes = map['comment_likes'];
-    this.comment_comments = map['comment_comments'];
-    this.comment_share = map['comment_share'];
+    this.uid = map['uid'];
+    this.correct = map['correct'];
+    this.question = map['question'];
+    this.createdAt = map['createdAt'];
+    this.updatedAt = map['updatedAt'];
+    this.v = map['__v'];
   }
 }
+//class Comment {
+//  int _id;
+//  String comment_avatar;
+//  String comment_name;
+//  String comment_designation;
+//  String comment_time;
+//  String comment_percent;
+//  String comment_rate;
+//  String comment_txt;
+//  String comment_likes;
+//  String comment_comments;
+//  String comment_share;
+//
+//  int get id => _id;
+//
+//  Comment.fromJson(Map<String, dynamic> json) {
+//    _id = json['id'];
+//    comment_avatar = json['comment_avatar'];
+//    comment_name = json['comment_name'];
+//    comment_designation = json['comment_designation'];
+//    comment_time = json['comment_time'];
+//    comment_percent = json['comment_percent'];
+//    comment_rate = json['comment_rate'];
+//    comment_txt = json['comment_txt'];
+//    comment_likes = json['comment_likes'];
+//    comment_comments = json['comment_comments'];
+//    comment_share = json['comment_share'];
+//  }
+//
+//  // Convert a Note object into a Map object
+//  Map<String, dynamic> toMap() {
+//    var map = Map<String, dynamic>();
+//    if (id != null) {
+//      map['id'] = _id;
+//    }
+//    map['comment_avatar'] = comment_avatar;
+//    map['comment_name'] = comment_name;
+//    map['comment_designation'] = comment_designation;
+//    map['comment_time'] = comment_time;
+//    map['comment_percent'] = comment_percent;
+//    map['comment_rate'] = comment_rate;
+//    map['comment_txt'] = comment_txt;
+//    map['comment_likes'] = comment_likes;
+//    map['comment_comments'] = comment_comments;
+//    map['comment_share'] = comment_share;
+//
+//    return map;
+//  }
+//
+//  // Extract a Note object from a Map object
+//  Comment.fromMapObject(Map<String, dynamic> map) {
+//    this._id = map['id'];
+//    this.comment_avatar = map['comment_avatar'];
+//    this.comment_name = map['comment_name'];
+//    this.comment_designation = map['comment_designation'];
+//    this.comment_time = map['comment_time'];
+//    this.comment_percent = map['comment_percent'];
+//    this.comment_rate = map['comment_rate'];
+//    this.comment_txt = map['comment_txt'];
+//    this.comment_likes = map['comment_likes'];
+//    this.comment_comments = map['comment_comments'];
+//    this.comment_share = map['comment_share'];
+//  }
+//}

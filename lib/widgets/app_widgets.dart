@@ -69,35 +69,39 @@ class PostCard extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        child: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")),
-                      ),
-                    ),
+//                    Padding(
+//                      padding: const EdgeInsets.all(8.0),
+//                      child: Container(
+//                        width: 40,
+//                        height: 40,
+//                        child: CircleAvatar(
+//                            backgroundImage: NetworkImage(
+//                                "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")),
+//                      ),
+//                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Text("Muhammad"),
-                        ),
+//                        Padding(
+//                          padding: const EdgeInsets.all(4.0),
+//                          child: Text("Muhammad"),
+//                        ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Text(
-                            post_time,
+                            post_time == null ? "" : post_time,
                             style: TextStyle(fontSize: 10, color: Colors.grey),
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: Text(
-                            post_location,
-                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width - 200,
+                            child: Text(
+                              post_location == null ? "" : post_location,
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.grey),
+                            ),
                           ),
                         )
                       ],
@@ -132,12 +136,15 @@ class PostCard extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 child: CachedNetworkImage(
                   fit: BoxFit.fill,
-                  imageUrl: post_img,
+                  imageUrl: post_img == null ? "" : post_img,
                   placeholder: (context, url) => Image.asset(
                     "assets/images/image_placeholder.png",
                     fit: BoxFit.fill,
                   ),
-                  errorWidget: (context, url, error) => new Icon(Icons.error),
+                  errorWidget: (context, url, error) => Image.asset(
+                    "assets/images/image_placeholder.png",
+                    fit: BoxFit.fill,
+                  ),
                   fadeInDuration: Duration(seconds: 1),
                   fadeOutDuration: Duration(seconds: 1),
                 ),
@@ -190,9 +197,9 @@ class PostCard extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            MyPeople(),
+            //MyPeople(),
             Text(
-              post_txt,
+              post_txt == null ? "" : post_txt,
             ),
           ],
         ));
@@ -221,48 +228,48 @@ Widget CommentCard(
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Center(
-                    child: Container(
-                      width: 35,
-                      height: 35,
-                      child: CircleAvatar(
-                          backgroundImage: NetworkImage(comment_avatar)),
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(comment_name),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          comment_designation,
-                          style: TextStyle(fontSize: 10, color: Colors.grey),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+//              Row(
+//                children: <Widget>[
+//                  Center(
+//                    child: Container(
+//                      width: 35,
+//                      height: 35,
+//                      child: CircleAvatar(
+//                          backgroundImage: NetworkImage(comment_avatar)),
+//                    ),
+//                  ),
+//                  Column(
+//                    crossAxisAlignment: CrossAxisAlignment.start,
+//                    children: <Widget>[
+//                      Padding(
+//                        padding: const EdgeInsets.all(4.0),
+//                        child: Text(comment_name),
+//                      ),
+//                      Padding(
+//                        padding: const EdgeInsets.all(4.0),
+//                        child: Text(
+//                          comment_designation,
+//                          style: TextStyle(fontSize: 10, color: Colors.grey),
+//                        ),
+//                      ),
+//                    ],
+//                  ),
+//                ],
+//              ),
               Column(
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        comment_share,
-                        style: TextStyle(fontSize: 10, color: Colors.grey),
-                      ),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Icon(Icons.star_half, color: Colors.yellow, size: 20),
-                    ],
-                  ),
+//                  Row(
+//                    children: <Widget>[
+//                      Text(
+//                        comment_share,
+//                        style: TextStyle(fontSize: 10, color: Colors.grey),
+//                      ),
+//                      SizedBox(
+//                        width: 3,
+//                      ),
+//                      Icon(Icons.star_half, color: Colors.yellow, size: 20),
+//                    ],
+//                  ),
                   Text(
                     comment_time,
                     style: TextStyle(fontSize: 10, color: Colors.grey),
@@ -281,47 +288,47 @@ Widget CommentCard(
           SizedBox(
             height: 15,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Icon(Icons.favorite, color: Colors.red, size: 20),
-                  SizedBox(
-                    width: 3,
-                  ),
-                  Text(
-                    comment_likes,
-                    style: TextStyle(fontSize: 10, color: Colors.grey),
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.comment, color: Colors.grey, size: 20),
-                  SizedBox(
-                    width: 3,
-                  ),
-                  Text(
-                    comment_comments,
-                    style: TextStyle(fontSize: 10, color: Colors.grey),
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.send, color: Colors.grey, size: 20),
-                  SizedBox(
-                    width: 3,
-                  ),
-                  Text(
-                    comment_share,
-                    style: TextStyle(fontSize: 10, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ],
-          ),
+//          Row(
+//            mainAxisAlignment: MainAxisAlignment.spaceAround,
+//            children: <Widget>[
+//              Row(
+//                children: <Widget>[
+//                  Icon(Icons.favorite, color: Colors.red, size: 20),
+//                  SizedBox(
+//                    width: 3,
+//                  ),
+//                  Text(
+//                    comment_likes,
+//                    style: TextStyle(fontSize: 10, color: Colors.grey),
+//                  ),
+//                ],
+//              ),
+//              Row(
+//                children: <Widget>[
+//                  Icon(Icons.comment, color: Colors.grey, size: 20),
+//                  SizedBox(
+//                    width: 3,
+//                  ),
+//                  Text(
+//                    comment_comments,
+//                    style: TextStyle(fontSize: 10, color: Colors.grey),
+//                  ),
+//                ],
+//              ),
+//              Row(
+//                children: <Widget>[
+//                  Icon(Icons.send, color: Colors.grey, size: 20),
+//                  SizedBox(
+//                    width: 3,
+//                  ),
+//                  Text(
+//                    comment_share,
+//                    style: TextStyle(fontSize: 10, color: Colors.grey),
+//                  ),
+//                ],
+//              ),
+//            ],
+//          ),
         ],
       ),
     ),

@@ -80,7 +80,7 @@ class DatabaseHelper {
   Future<int> updatePost(Post Post) async {
     var db = await this.database;
     var result = await db.update(PostTable, Post.toMap(),
-        where: '$colId = ?', whereArgs: [Post.id]);
+        where: '$colId = ?', whereArgs: [Post.uid]);
     return result;
   }
 

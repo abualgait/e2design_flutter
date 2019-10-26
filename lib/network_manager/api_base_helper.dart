@@ -9,11 +9,25 @@ import 'custom_app_exceptions.dart';
 
 class ApiBaseHelper {
   final String _baseUrl = "http://www.mocky.io/v2/";
+  final String _baseUrlProduction =
+      "https://murmuring-meadow-41519.herokuapp.com/api/";
 
   Future<dynamic> get(String url) async {
     var responseJson;
     try {
-      final response = await http.get(_baseUrl + url);
+      final response = await http.get(_baseUrlProduction + url);
+      responseJson = _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
+
+  Future<dynamic> post(String url, {Map body}) async {
+    var responseJson;
+    try {
+      final response = await http.post(_baseUrlProduction + url,
+          body: body);
       responseJson = _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');

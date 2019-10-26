@@ -5,9 +5,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e2_design/base_widgets/base_network_widgets.dart';
 import 'package:e2_design/bloc/change_theme_bloc.dart';
 import 'package:e2_design/bloc/change_theme_state.dart';
+import 'package:e2_design/models/comment_response.dart';
 import 'package:e2_design/models/post_details_response.dart';
+import 'package:e2_design/models/request/comment_request.dart';
 import 'package:e2_design/network_manager/api_response.dart';
 import 'package:e2_design/network_manager/network_blocs/post_details_bloc.dart';
+import 'package:e2_design/repositories/base_repository.dart';
+import 'package:e2_design/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,10 +23,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
 class RespondToPostPage extends StatefulWidget {
-  int _id = 0;
+  String uid = "";
 
-  RespondToPostPage(int id) {
-    this._id = id;
+  RespondToPostPage(String id) {
+    this.uid = id;
   }
 
   @override
@@ -36,6 +40,7 @@ class _RespondToPostPageState extends State<RespondToPostPage> {
   void initState() {
     super.initState();
     _bloc = PostDetailsBloc();
+    _bloc.fetchPostDetailsList(widget.uid);
   }
 
   @override
@@ -60,7 +65,7 @@ class _RespondToPostPageState extends State<RespondToPostPage> {
               body: Container(
                 color: state.themeData.primaryColor,
                 child: RefreshIndicator(
-                  onRefresh: () => _bloc.fetchPostDetailsList(widget._id),
+                  onRefresh: () => _bloc.fetchPostDetailsList(widget.uid),
                   child: StreamBuilder<ApiResponse<PostDetailsObj>>(
                     stream: _bloc.postdetailsStream,
                     builder: (context, snapshot) {
@@ -86,7 +91,7 @@ class _RespondToPostPageState extends State<RespondToPostPage> {
                             return Error(
                               errorMessage: snapshot.data.message,
                               onRetryPressed: () =>
-                                  _bloc.fetchPostDetailsList(widget._id),
+                                  _bloc.fetchPostDetailsList(widget.uid),
                             );
                             break;
                         }
@@ -124,6 +129,10 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
 
   CameraPosition _currentCameraPosition;
   MapType _currentMapType = MapType.normal;
+  TextEditingController controler = TextEditingController();
+  String thisText = "";
+  var showloader = false;
+  BaseRepository _baseRepository;
 
   _pickImage(String action) {
     action == 'Gallery'
@@ -201,6 +210,7 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
   @override
   void initState() {
     super.initState();
+    _baseRepository = BaseRepository();
   }
 
   @override
@@ -250,172 +260,277 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
       },
       markers: {gramercyMarker},
     );
-    return Stack(
-      children: <Widget>[
-        Container(
-          height: 300.0,
-          child: CachedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: widget.postDetailsObj.post_img,
-            placeholder: (context, url) => Image.asset(
-              "assets/images/image_placeholder.png",
-              fit: BoxFit.cover,
-            ),
-            errorWidget: (context, url, error) => new Icon(Icons.error),
-            fadeInDuration: Duration(seconds: 1),
-            fadeOutDuration: Duration(seconds: 1),
-          ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.clear),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 150,
-            ),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    elevation: 5,
-                    child: Column(
+    return BlocBuilder(
+        bloc: changeThemeBloc,
+        builder: (BuildContext context, ChangeThemeState state) {
+          return Theme(
+              data: state.themeData,
+              child: Scaffold(
+                  backgroundColor: state.themeData.backgroundColor,
+                  body: SingleChildScrollView(
+                    child: Stack(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                widget.postDetailsObj.post_txt,
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Icon(Icons.location_on, size: 20),
-                                      SizedBox(
-                                        width: 2,
-                                      ),
-                                      Text(widget.postDetailsObj.post_location),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Icon(Icons.history, size: 20),
-                                      SizedBox(
-                                        width: 2,
-                                      ),
-                                      Text(widget.postDetailsObj.post_time),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        new TextField(
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
-                          ),
-                          decoration: new InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              contentPadding: EdgeInsets.only(
-                                  left: 15, bottom: 11, top: 11, right: 15),
-                              hintStyle:
-                                  TextStyle(fontSize: 14.0, color: Colors.grey),
-                              hintText: 'Leave your answer here'),
-                        ),
-                        SizedBox(
-                          height: 150,
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: showImage(),
-                                flex: 1,
-                              ),
-                              Expanded(
-                                child: googleMap,
-                                flex: 1,
-                              )
-                            ],
-                          ),
-                        ),
                         Container(
-                          color: Colors.redAccent,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
+                          height: 300.0,
+                          child: CachedNetworkImage(
+                            fit: BoxFit.cover,
+                            imageUrl: widget.postDetailsObj.post_img == null
+                                ? ""
+                                : widget.postDetailsObj.post_img,
+                            placeholder: (context, url) => Image.asset(
+                              "assets/images/image_placeholder.png",
+                              fit: BoxFit.cover,
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              "assets/images/image_placeholder.png",
+                              fit: BoxFit.cover,
+                            ),
+                            fadeInDuration: Duration(seconds: 1),
+                            fadeOutDuration: Duration(seconds: 1),
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                      child: Text(
-                                        "Submit",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 20),
-                                      ),
-                                    )),
-                                Expanded(
-                                  flex: 1,
-                                  child: Row(
-                                    children: <Widget>[
-                                      IconButton(
-                                        color: Colors.white,
-                                        icon: Icon(Icons.camera_alt),
-                                        onPressed: () {
-                                          _pickImage('Camera');
-                                        },
-                                      ),
-                                      IconButton(
-                                        color: Colors.white,
-                                        icon: Icon(Icons.image),
-                                        onPressed: () {
-                                          _pickImage('Gallery');
-                                        },
-                                      ),
-                                      IconButton(
-                                        color: Colors.white,
-                                        icon: Icon(Icons.map),
-                                        onPressed: () {},
-                                      )
-                                    ],
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: Icon(
+                                    Icons.clear,
+                                    color: Colors.white,
                                   ),
-                                ),
+                                )
                               ],
                             ),
+                            SizedBox(
+                              height: 150,
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Card(
+                                    semanticContainer: true,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    elevation: 5,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                widget.postDetailsObj
+                                                            .post_txt ==
+                                                        null
+                                                    ? ""
+                                                    : widget.postDetailsObj
+                                                        .post_txt,
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    child: Container(
+                                                      child: Row(
+                                                        children: <Widget>[
+                                                          Icon(
+                                                              Icons.location_on,
+                                                              size: 20),
+                                                          SizedBox(
+                                                            width: 2,
+                                                          ),
+                                                          Flexible(
+                                                            child: Container(
+                                                              child: Text(
+                                                                widget.postDetailsObj
+                                                                            .post_location ==
+                                                                        null
+                                                                    ? ""
+                                                                    : widget
+                                                                        .postDetailsObj
+                                                                        .post_location,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Icon(Icons.history,
+                                                          size: 20),
+                                                      SizedBox(
+                                                        width: 2,
+                                                      ),
+                                                      Text(widget.postDetailsObj
+                                                                  .post_time ==
+                                                              null
+                                                          ? ""
+                                                          : widget
+                                                              .postDetailsObj
+                                                              .post_time),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: new TextField(
+                                            controller: controler,
+                                            style: TextStyle(
+                                                color: state.themeData.textTheme
+                                                    .body1.color),
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              labelText: 'Type your Answer',
+                                              labelStyle: TextStyle(
+                                                color: state.themeData.textTheme
+                                                    .body1.color,
+                                              ),
+                                              contentPadding:
+                                                  EdgeInsets.all(10),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 150,
+                                          child: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: showImage(),
+                                                flex: 1,
+                                              ),
+                                              Expanded(
+                                                child: googleMap,
+                                                flex: 1,
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          color: Colors.redAccent,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                    flex: 1,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          showloader = true;
+                                                        });
+                                                        isOnline()
+                                                            .then((onValue) {
+                                                          if (onValue) {
+                                                            checkValidations(
+                                                                context);
+                                                          } else {
+                                                            //show toas offline mode
+                                                          }
+                                                        });
+                                                      },
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Submit",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 20),
+                                                        ),
+                                                      ),
+                                                    )),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      IconButton(
+                                                        color: Colors.white,
+                                                        icon: Icon(
+                                                            Icons.camera_alt),
+                                                        onPressed: () {
+                                                          _pickImage('Camera');
+                                                        },
+                                                      ),
+                                                      IconButton(
+                                                        color: Colors.white,
+                                                        icon: Icon(Icons.image),
+                                                        onPressed: () {
+                                                          _pickImage('Gallery');
+                                                        },
+                                                      ),
+                                                      IconButton(
+                                                        color: Colors.white,
+                                                        icon: Icon(Icons.map),
+                                                        onPressed: () {},
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ))),
+                          ],
+                        ),
+                        Center(
+                          child: Visibility(
+                            child: Center(child: CircularProgressIndicator()),
+                            visible: showloader,
                           ),
                         )
                       ],
-                    ))),
-          ],
-        )
-      ],
+                    ),
+                  )));
+        });
+  }
+
+  void checkValidations(BuildContext context) {
+    this.thisText = controler.text;
+    print(thisText);
+    createComment();
+  }
+
+  void createComment() {
+    CommentRequest commentRequest = new CommentRequest(
+      comment: thisText,
+      question_id: widget.postDetailsObj.id, //5d95b9922f2ba612a2f0bf4b
     );
+    _baseRepository.createComment(commentRequest).then((onValue) {
+      checkResponse(onValue);
+    });
+  }
+
+  void checkResponse(CommentResponse response) {
+    //print(response.data.createdAt);
+    Navigator.pop(context);
+
+    setState(() {
+      showloader = false;
+    });
   }
 }
 

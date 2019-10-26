@@ -1,7 +1,8 @@
 class NormalResponse {
   int next_offset;
-  String status;
+  bool status = true;
   String message;
+
 
   NormalResponse(this.next_offset, this.status, this.message);
 

@@ -69,6 +69,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               Text(
                                 "Language",
                               ),
+                              SizedBox(
+                                height: 5,
+                              ),
                               GestureDetector(
                                 onTap: () {
                                   showDialog(
@@ -171,6 +174,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                 height: 10,
                               ),
                               Text("Text Size"),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Card(
                                 elevation: 5,
                                 color: state.themeData.primaryColor,
