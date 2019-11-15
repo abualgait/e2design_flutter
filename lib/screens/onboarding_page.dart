@@ -11,8 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gradient_text/gradient_text.dart';
 
-import 'home.dart';
-
 class OnBoardingPage extends StatefulWidget {
   @override
   _OnBoardingPageState createState() => _OnBoardingPageState();
@@ -174,10 +172,8 @@ class _BoardingWidgetState extends State<BoardingWidget>
                           child: CachedNetworkImage(
                             fit: BoxFit.fitWidth,
                             imageUrl: page.image == null ? "" : page.image,
-                            placeholder: (context, url) => Image.asset(
-                              "assets/images/image_placeholder.png",
-                              fit: BoxFit.fitWidth,
-                            ),
+                            placeholder: (context, url) =>
+                                Center(child: CircularProgressIndicator()),
                             errorWidget: (context, url, error) => Image.asset(
                               "assets/images/image_placeholder.png",
                               fit: BoxFit.fitWidth,
@@ -253,21 +249,18 @@ class _BoardingWidgetState extends State<BoardingWidget>
               right: 30.0,
               bottom: 30.0,
               child: ScaleTransition(
-                scale: _scaleAnimation,
-                child:
-                     FloatingActionButton(
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.black,
-                        ),
-                        onPressed: () {
-                          Navigator.pushNamedAndRemoveUntil(context, "/landing", (r) => false);
-
-                        },
-                      )
-
-              ),
+                  scale: _scaleAnimation,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.arrow_forward,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, "/landing", (r) => false);
+                    },
+                  )),
             ),
           ],
         ),

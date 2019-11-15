@@ -22,7 +22,8 @@ class _MyAppState extends State<MyApp> {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       new FlutterLocalNotificationsPlugin();
   var isEnglish = true;
-  var supportedLocale;
+  var supportedLocale = [Locale('en', 'US')];
+
   String textValue = '';
 
   @override
@@ -57,18 +58,18 @@ class _MyAppState extends State<MyApp> {
     firebaseMessaging.getToken().then((token) {
       update(token);
     });
+    setState(() {
+      SharedPreferencesHelper.getLanguageCode().then((onValue) {
+        if (onValue == "en") {
+          this.isEnglish = true;
+          supportedLocale = [Locale('en', 'US')];
+        } else {
+          this.isEnglish = false;
+          supportedLocale = [Locale('ar', 'EG')];
+        }
 
-    SharedPreferencesHelper.getLanguageCode().then((onValue) {
-      if (onValue == "en") {
-        this.isEnglish = true;
-        supportedLocale = [Locale('en', 'US')];
-      } else {
-        this.isEnglish = false;
-        supportedLocale = [Locale('ar', 'EG')];
-      }
-
-      print("isEnglish " + isEnglish.toString());
-      setState(() {});
+        print("isEnglish " + isEnglish.toString());
+      });
     });
   }
 
@@ -102,7 +103,6 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/landing': (BuildContext context) => HomePage(),
         '/root': (BuildContext context) => MyApp(),
-
       },
       // List all of the app's supported locales here
       supportedLocales: supportedLocale,

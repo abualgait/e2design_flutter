@@ -181,8 +181,9 @@ class _LoginPageState extends State<LoginPage> {
                                                               showloader =
                                                                   false;
                                                             });
-                                                            showMessage(context,
-                                                                "Internet Connections Lost");
+                                                            flushBarUtil(
+                                                                context, "Oops!", "Internet Connections Lost", Icons.not_interested);
+
                                                           }
                                                         }
                                                       });
@@ -274,7 +275,9 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         showloader = false;
       });
-      showMessage(context, "Enter valid email of number");
+
+      flushBarUtil(
+          context, "Oops!", "Enter valid email of number", Icons.close);
     }
   }
 

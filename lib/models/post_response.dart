@@ -7,13 +7,18 @@ class PostResponse extends NormalResponse {
   List<Post> results;
   int pages;
 
-  PostResponse(int next_offset, bool status, String message, this.results,this.pages)
+  PostResponse(
+      int next_offset, bool status, String message, this.results, this.pages)
       : super(next_offset, status, message);
 
   factory PostResponse.fromJson(Map<String, dynamic> json) {
     final normalresponse = NormalResponse.fromJson(json);
-    return PostResponse(normalresponse.next_offset, normalresponse.status,
-        normalresponse.message, getListFromDynamic(json['data']),json['pages']);
+    return PostResponse(
+        normalresponse.next_offset,
+        normalresponse.status,
+        normalresponse.message,
+        getListFromDynamic(json['data']),
+        json['pages']);
   }
 }
 
@@ -27,7 +32,7 @@ class Post {
 //  String post_comments;
   String post_time;
 
-  // String post_stars;
+  int post_stars;
   String status;
   String archive;
 
@@ -41,7 +46,7 @@ class Post {
     post_location = json['location'];
     //post_comments = json['post_comments'];
     post_time = json['created_at'];
-    // post_stars = json['post_stars'];
+    post_stars = json['likes'];
     status = json['status'];
     archive = json['archive'];
   }
@@ -58,7 +63,7 @@ class Post {
     map['location'] = post_location;
     //map['post_comments'] = post_comments;
     map['created_at'] = post_time;
-    //map['post_stars'] = post_stars;
+    map['post_stars'] = post_stars;
     map['status'] = status;
     map['archive'] = archive;
 
@@ -74,7 +79,7 @@ class Post {
     this.post_location = map['location'];
     //this.post_comments = map['post_comments'];
     this.post_time = map['created_at'];
-    //  this.post_stars = map['post_stars'];
+    this.post_stars = map['post_stars'];
     this.status = map['status'];
     this.archive = map['archive'];
   }

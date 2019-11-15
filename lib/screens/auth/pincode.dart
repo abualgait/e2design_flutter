@@ -38,6 +38,7 @@ class _PinCodePageState extends State<PinCodePage> {
 
   var appbartitle = "";
   TextEditingController controller = TextEditingController();
+  TextEditingController temp_controller = TextEditingController();
   String thisText = "";
   int pinLength = 4;
 
@@ -49,200 +50,224 @@ class _PinCodePageState extends State<PinCodePage> {
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
-    return BlocBuilder(
-        bloc: changeThemeBloc,
-        builder: (BuildContext context, ChangeThemeState state) {
-          return Theme(
-              data: state.themeData,
-              child: Scaffold(
-                backgroundColor: state.themeData.backgroundColor,
-                body: Stack(
-                  children: <Widget>[
-                    ClipPath(
-                      clipper: Mc2lipper(),
-                      child: Container(
-                        color: state.themeData.primaryColor,
+    return Scaffold(
+      body: BlocBuilder(
+          bloc: changeThemeBloc,
+          builder: (BuildContext context, ChangeThemeState state) {
+            return Theme(
+                data: state.themeData,
+                child: Scaffold(
+                  backgroundColor: state.themeData.backgroundColor,
+                  body: Stack(
+                    children: <Widget>[
+                      ClipPath(
+                        clipper: Mc2lipper(),
+                        child: Container(
+                          color: state.themeData.primaryColor,
+                        ),
                       ),
-                    ),
-                    SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(25.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 140,
-                                  ),
-                                  Text(
-                                    "Verfication code",
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 24.0),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        "Please type the verfication",
-                                        style: TextStyle(
-                                            fontStyle: FontStyle.normal,
-                                            fontSize: 12.0),
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          Text(
-                                            "code sent to",
-                                            style: TextStyle(
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 12.0),
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            widget.response.userData.phone_number,
-                                            style: TextStyle(
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 12.0),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                      SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(25.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 140,
+                                    ),
+                                    Text(
+                                      "Verfication code",
+                                      style: TextStyle(
+                                          fontStyle: FontStyle.normal,
+                                          fontSize: 24.0),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          "Please type the verfication",
+                                          style: TextStyle(
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 12.0),
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            Text(
+                                              "code sent to",
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.normal,
+                                                  fontSize: 12.0),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(
+                                              widget.response.userData
+                                                  .phone_number,
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.normal,
+                                                  fontSize: 12.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 80,
-                            ),
-                            Center(
-                              child: PinCodeTextField(
-                                pinBoxHeight: 60,
-                                pinBoxWidth: 60,
-                                autofocus: false,
-                                controller: controller,
-                                hideCharacter: false,
-                                highlight: true,
-                                highlightColor: Colors.blue,
-                                defaultBorderColor:
-                                    state.themeData.textTheme.body1.color,
-                                hasTextBorderColor: Colors.green,
-                                maxLength: pinLength,
-                                hasError: hasError,
-                                onTextChanged: (text) {
+                              SizedBox(
+                                height: 80,
+                              ),
+                              Center(
+                                child: PinCodeTextField(
+                                  pinBoxHeight: 60,
+                                  pinBoxWidth: 60,
+                                  autofocus: false,
+                                  controller: controller,
+                                  hideCharacter: false,
+                                  highlight: true,
+                                  highlightColor: Colors.blue,
+                                  defaultBorderColor:
+                                      state.themeData.textTheme.body1.color,
+                                  hasTextBorderColor: Colors.green,
+                                  maxLength: pinLength,
+                                  hasError: hasError,
+                                  onTextChanged: (text) {
+                                    setState(() {
+                                      hasError = false;
+                                    });
+                                  },
+                                  onDone: (text) {
+                                    print("DONE $text");
+                                  },
+                                  pinTextStyle: TextStyle(fontSize: 20.0),
+                                  pinTextAnimatedSwitcherTransition:
+                                      ProvidedPinBoxTextAnimation
+                                          .scalingTransition,
+                                  pinTextAnimatedSwitcherDuration:
+                                      Duration(milliseconds: 300),
+                                ),
+                              ),
+                              Text(widget.response.userData.verification_code),
+                              TextField(
+                                controller: temp_controller,
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                                decoration: new InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5.0)),
+                                  contentPadding: EdgeInsets.only(
+                                      left: 25, bottom: 25, top: 25, right: 25),
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  hintText: 'Enter Code(testing only)',
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              GestureDetector(
+                                onTap: () {
                                   setState(() {
-                                    hasError = false;
+                                    showloader = true;
+
+                                    print("comming code");
+                                    print(widget
+                                        .response.userData.verification_code);
+                                    this.thisText = temp_controller.text;
+                                    if (thisText ==
+                                        widget.response.userData
+                                            .verification_code) {
+                                      isOnline().then((onValue) {
+                                        if (onValue) {
+                                          checkValidation(context, thisText);
+                                        } else {
+
+                                          flushBarUtil(
+                                              context, "Oops!", "Internet Connection Lost", Icons.close);
+                                        }
+                                      });
+                                    } else {
+                                      print("invalid code");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => LoginPage()),
+                                      );
+                                    }
                                   });
                                 },
-                                onDone: (text) {
-                                  print("DONE $text");
-                                },
-                                pinTextStyle: TextStyle(fontSize: 20.0),
-                                pinTextAnimatedSwitcherTransition:
-                                    ProvidedPinBoxTextAnimation.scalingTransition,
-                                pinTextAnimatedSwitcherDuration:
-                                    Duration(milliseconds: 300),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  showloader = true;
-
-                                  print("comming code");
-                                  print(
-                                      widget.response.userData.verification_code);
-                                  this.thisText = controller.text;
-                                  if (thisText ==
-                                      widget
-                                          .response.userData.verification_code) {
-                                    isOnline().then((onValue) {
-                                      if (onValue) {
-                                        checkValidation(context, thisText);
-                                      } else {
-                                        //show toast offline mode
-                                      }
-                                    });
-                                  } else {
-                                    print("invalid code");
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginPage()),
-                                    );
-                                  }
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ClipRRect(
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(200.0)),
-                                  child: Container(
-                                    color: state.themeData.textTheme.body1.color,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            "Verify now",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color:
-                                                    state.themeData.primaryColor),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward,
-                                            color: state.themeData.primaryColor,
-                                          )
-                                        ],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ClipRRect(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(200.0)),
+                                    child: Container(
+                                      color:
+                                          state.themeData.textTheme.body1.color,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              "Verify now",
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: state
+                                                      .themeData.primaryColor),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Icon(
+                                              Icons.arrow_forward,
+                                              color:
+                                                  state.themeData.primaryColor,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Center(
-                              child: Text(
-                                "Resend code",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontStyle: FontStyle.normal,
-                                    color: state.themeData.primaryColor),
+                              Center(
+                                child: Text(
+                                  "Resend code",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.normal,
+                                      color: state.themeData.primaryColor),
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                          ],
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Visibility(
-                      child: Center(child: CircularProgressIndicator()),
-                      visible: showloader,
-                    )
-                  ],
-                ),
-              ));
-        });
+                      Visibility(
+                        child: Center(child: CircularProgressIndicator()),
+                        visible: showloader,
+                      )
+                    ],
+                  ),
+                ));
+          }),
+    );
   }
 
   void checkValidation(BuildContext context, String code) {

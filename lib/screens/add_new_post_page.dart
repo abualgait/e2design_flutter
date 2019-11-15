@@ -2,13 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:async/async.dart';
 import 'package:e2_design/bloc/change_theme_bloc.dart';
 import 'package:e2_design/bloc/change_theme_state.dart';
 import 'package:e2_design/language_manager/AppLocalizations.dart';
-import 'package:e2_design/models/normal_response.dart';
 import 'package:e2_design/models/request/question_request.dart';
-import 'package:e2_design/repositories/base_repository.dart';
 import 'package:e2_design/utils/Utils.dart';
 import 'package:e2_design/widgets/common_widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,12 +15,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geocoder/model.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
-import 'package:path/path.dart';
+import 'package:mime/mime.dart';
 
 class AddNewPostPage extends StatefulWidget {
+  Function onQuestionCreated;
+
+  AddNewPostPage(this.onQuestionCreated);
+
   @override
   _AddNewPostPageState createState() => _AddNewPostPageState();
 }
@@ -38,14 +40,11 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
   String latStr = "";
   String timeStr = "";
   var showloader = false;
-
-  BaseRepository _baseRepository;
-  String base64Image;
+  BuildContext globalContext;
 
   @override
   void initState() {
     super.initState();
-    _baseRepository = BaseRepository();
   }
 
   @override
@@ -64,6 +63,9 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
           createQuestion();
         } else {
           //show toas offline mode
+          // showMessage(globalContext, "Internet Connection lost");
+          flushBarUtil(
+              globalContext, "Oops!", "Internet Connection lost", Icons.close);
         }
       });
     });
@@ -71,92 +73,73 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
 
   void createQuestion() {
     QuestionRequest questionRequest = new QuestionRequest(
-        question: thisText,
-        location: longStr + "@" + latStr,
-        city: locationStr,
-        details: "details",
-        image: base64Image);
+      question: thisText,
+      location: longStr + "@" + latStr,
+      city: locationStr,
+      details: "details",
+      image: "",
+      tag_1: "",
+      tag_2: "",
+      tag_3: "",
+      user_id: "",
+    );
 
-//    _baseRepository.createQuestions(questionRequest).then((onValue) {
-//      checkResponse(onValue);
-//    });
     imageFile.then((onValue) {
-      getUploadimg(questionRequest, onValue);
-//      .then((onValue) {
-//        // checkResponse(onValue);
-//      });
+      _uploadImage(questionRequest, onValue).then((onValue) {
+        checkResponse(onValue);
+      });
     });
   }
 
-  ///storage/emulated/0/Android/data/com.abualgait.e2_design/files/Pictures/scaled_image_picker8641475548139463162.jpg
-  _asyncFileUpload(QuestionRequest questionRequest, File file) async {
-    //create multipart request for POST or PATCH method
-    var request = http.MultipartRequest("POST",
+  Future<Map<String, dynamic>> _uploadImage(
+      QuestionRequest questionRequest, File image) async {
+    // Find the mime type of the selected file by looking at the header bytes of the file
+    final mimeTypeData =
+        lookupMimeType(image.path, headerBytes: [0xFF, 0xD8]).split('/');
+    // Intilize the multipart request
+    final imageUploadRequest = http.MultipartRequest('POST',
         Uri.parse("https://murmuring-meadow-41519.herokuapp.com/api/question"));
-    //add text fields
-    request.fields["question"] = questionRequest.question;
-    request.fields["location"] = questionRequest.location;
-    request.fields["city"] = questionRequest.city;
-    request.fields["details"] = questionRequest.details;
-    print(file.path);
-    //create multipart using filepath, string or bytes
-    var pic = await http.MultipartFile.fromPath("image", file.path);
-    //add multipart to request
-    request.files.add(pic);
-
-    var response = await request.send();
-
-    //Get the response from the server
-    var responseData = await response.stream.toBytes();
-    var responseString = String.fromCharCodes(responseData);
-    print(responseString);
+    // Attach the file in the request
+    final file = await http.MultipartFile.fromPath('image', image.path,
+        contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
+    // Explicitly pass the extension of the image with request body
+    // Since image_picker has some bugs due which it mixes up
+    // image extension with file name like this filenamejpge
+    // Which creates some problem at the server side to manage
+    // or verify the file extension
+    imageUploadRequest.fields['question'] = questionRequest.question;
+    imageUploadRequest.fields['location'] = questionRequest.location;
+    imageUploadRequest.fields['city'] = questionRequest.city;
+    imageUploadRequest.fields['details'] = questionRequest.details;
+    imageUploadRequest.fields['tag_1'] = questionRequest.tag_1;
+    imageUploadRequest.fields['tag_2'] = questionRequest.tag_2;
+    imageUploadRequest.fields['tag_3'] = questionRequest.tag_3;
+    imageUploadRequest.fields['user_id'] = questionRequest.user_id;
+    imageUploadRequest.fields['ext'] = mimeTypeData[1];
+    imageUploadRequest.files.add(file);
+    try {
+      final streamedResponse = await imageUploadRequest.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      if (response.statusCode != 200) {
+        return null;
+      }
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      print(responseData);
+      return responseData;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
-  Upload(QuestionRequest questionRequest, File imageFile) async {
-    var stream =
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-    var length = await imageFile.length();
-
-    var uri =
-        Uri.parse("https://murmuring-meadow-41519.herokuapp.com/api/question");
-
-    var request = new http.MultipartRequest("POST", uri);
-    //add text fields
-    request.fields["question"] = questionRequest.question;
-    request.fields["location"] = questionRequest.location;
-    request.fields["city"] = questionRequest.city;
-    request.fields["details"] = questionRequest.details;
-    var multipartFile = new http.MultipartFile('image', stream, length,
-        filename: basename(imageFile.path));
-    //contentType: new MediaType('image', 'png'));
-    request.files.add(multipartFile);
-
-    var response = await request.send();
-    print(response.statusCode);
-    response.stream.transform(utf8.decoder).listen((value) {
-      print(value);
-    });
-  }
-
-  void getUploadimg(QuestionRequest questionRequest, _image) async {
-    String apiUrl = 'https://murmuring-meadow-41519.herokuapp.com/api/question';
-    final length = await _image.length();
-    final request = new http.MultipartRequest('POST', Uri.parse(apiUrl))
-      ..files.add(new http.MultipartFile('image', _image.openRead(), length));
-    http.Response response = await http.Response.fromStream(await request.send());
-    print("Result: ${response.body}");
-
-  }
-
-  void checkResponse(NormalResponse onValue) {
-    NormalResponse response = onValue;
-
-    if (response.message != "") {
-      print("Question has been posted successfuly");
-      //Navigator.pop(context);
+  void checkResponse(Map<String, dynamic> response) {
+    // Check if any error occured
+    if (response == null || response.containsKey("error")) {
+      flushBarUtil(
+          globalContext, "Oops!", "Question Upload Failed", Icons.close);
     } else {
-      //show status false and show message
-      print(response.message);
+      Navigator.pop(globalContext);
+      widget.onQuestionCreated();
     }
     setState(() {
       showloader = false;
@@ -175,210 +158,236 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('kk:mm:ss \nEEE d MMM yyyy').format(now);
     timeStr = formattedDate;
-    return BlocBuilder(
-      bloc: changeThemeBloc,
-      builder: (BuildContext context, ChangeThemeState state) {
-        return Theme(
-            data: state.themeData,
-            child: Scaffold(
-              appBar: buildMainAppBarWithActions(
-                  state,
-                  true,
-                  false,
-                  context,
-                  AppLocalizations.of(context).translate('app_add_new_post'),
-                  state.themeData.textTheme.headline,
-                  state.themeData.primaryColor,
-                  actions),
-              backgroundColor: Colors.white10,
-              body: SafeArea(
-                child: Container(
-                  color: state.themeData.primaryColor,
+    return Scaffold(
+      body: BlocBuilder(
+        bloc: changeThemeBloc,
+        builder: (BuildContext context, ChangeThemeState state) {
+          globalContext = context;
+          return Theme(
+              data: state.themeData,
+              child: Scaffold(
+                resizeToAvoidBottomPadding: false,
+                appBar: buildMainAppBarWithActions(
+                    state,
+                    true,
+                    false,
+                    context,
+                    AppLocalizations.of(context).translate('app_add_new_post'),
+                    state.themeData.textTheme.headline,
+                    state.themeData.primaryColor,
+                    actions),
+                backgroundColor: Colors.white10,
+                body: SafeArea(
                   child: Stack(
                     children: <Widget>[
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                            child: Image.asset(
-                          "assets/images/worldmap.jpg",
-                          fit: BoxFit.cover,
-                        )),
+                      Container(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                              Color(0xff614385),
+                              Color(0xff516395),
+                            ])),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Card(
-                                elevation: 5,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 100,
-                                    child: TextField(
-                                      controller: controller,
-                                      minLines: 4,
-                                      maxLines: 25,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20.0,
-                                      ),
-                                      decoration: new InputDecoration(
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          contentPadding: EdgeInsets.only(
-                                              left: 15,
-                                              bottom: 11,
-                                              top: 11,
-                                              right: 15),
-                                          hintStyle: TextStyle(
-                                              fontSize: 20.0,
-                                              color: Colors.grey),
-                                          hintText:
-                                              'What do you want to ask about?'),
-                                    ),
-                                  ),
-                                )),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Card(
-                                elevation: 5,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                Icon(Icons.location_on,
-                                                    size: 20),
-                                                SizedBox(
-                                                  width: 2,
-                                                ),
-                                                Text("Location"),
-                                              ],
-                                            ),
-                                            FutureBuilder(
-                                                future: locateUser(),
-                                                builder: ((context,
-                                                    AsyncSnapshot<List<Address>>
-                                                        snapshot) {
-                                                  //  if (snapshot.hasData) {
-                                                  if (snapshot.hasData &&
-                                                      snapshot.data.first
-                                                              .locality !=
-                                                          null) {
-                                                    locationStr = snapshot
-                                                        .data.first.locality;
-                                                    return Chip(
-                                                      labelStyle: TextStyle(
-                                                          color:
-                                                              Colors.black54),
-                                                      label: Text(snapshot
-                                                          .data.first.locality),
-                                                    );
-                                                  } else {
-                                                    print(
-                                                        "Connection State : ${snapshot.connectionState}");
-                                                    return SizedBox(
-                                                        height: 16,
-                                                        width: 16,
-                                                        child:
-                                                            CircularProgressIndicator());
-                                                  }
-                                                }))
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                          height: 1,
-                                          child: Container(
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                Icon(Icons.watch_later,
-                                                    size: 20),
-                                                SizedBox(
-                                                  width: 2,
-                                                ),
-                                                Text("Time"),
-                                              ],
-                                            ),
-                                            Text(formattedDate,
-                                                style: new TextStyle(
-                                                    color: Colors.black54,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    fontSize: 14.0))
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Expanded(
-                              child: Card(
+                        child: Container(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Card(
                                   elevation: 5,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            IconButton(
-                                              icon: Icon(Icons.camera_alt),
-                                              onPressed: () {
-                                                _pickImage('Camera');
-                                              },
-                                            ),
-                                            IconButton(
-                                              icon: Icon(Icons.image),
-                                              onPressed: () {
-                                                _pickImage('Gallery');
-                                              },
-                                            )
-                                          ],
+                                    child: Container(
+                                      height: 100,
+                                      child: TextField(
+                                        controller: controller,
+                                        minLines: 4,
+                                        maxLines: 25,
+                                        style: TextStyle(
+                                          color: state
+                                              .themeData.textTheme.body1.color,
+                                          fontSize: 20.0,
                                         ),
-                                        Expanded(
-                                            child: Flex(
-                                          direction: Axis.horizontal,
-                                          children: <Widget>[
-                                            Expanded(child: showImage())
-                                          ],
-                                        ))
-                                      ],
+                                        decoration: new InputDecoration(
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            contentPadding: EdgeInsets.only(
+                                                left: 15,
+                                                bottom: 11,
+                                                top: 11,
+                                                right: 15),
+                                            hintStyle: TextStyle(
+                                                fontSize: 20.0,
+                                                color: Colors.grey),
+                                            hintText:
+                                                'What do you want to ask about?'),
+                                      ),
                                     ),
                                   )),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                          ],
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Chip(
+                                label: new Text(controller.text),
+                                onDeleted: () {},
+                              ),
+                              Visibility(
+                                visible: false,
+                                child: Card(
+                                    elevation: 5,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Row(
+                                                  children: <Widget>[
+                                                    Icon(Icons.location_on,
+                                                        size: 20),
+                                                    SizedBox(
+                                                      width: 2,
+                                                    ),
+                                                    Text("Location"),
+                                                  ],
+                                                ),
+                                                FutureBuilder(
+                                                    future: locateUser(),
+                                                    builder: ((context,
+                                                        AsyncSnapshot<
+                                                                List<Address>>
+                                                            snapshot) {
+                                                      //  if (snapshot.hasData) {
+                                                      if (snapshot.hasData &&
+                                                          snapshot.data.first
+                                                                  .locality !=
+                                                              null) {
+                                                        locationStr = snapshot
+                                                            .data
+                                                            .first
+                                                            .locality;
+                                                        return Chip(
+                                                          labelStyle: TextStyle(
+                                                            color: state
+                                                                .themeData
+                                                                .textTheme
+                                                                .body1
+                                                                .color,
+                                                          ),
+                                                          label: Text(snapshot
+                                                              .data
+                                                              .first
+                                                              .locality),
+                                                        );
+                                                      } else {
+                                                        print(
+                                                            "Connection State : ${snapshot.connectionState}");
+                                                        return SizedBox(
+                                                            height: 16,
+                                                            width: 16,
+                                                            child:
+                                                                CircularProgressIndicator());
+                                                      }
+                                                    }))
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              height: 1,
+                                              child: Container(
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Row(
+                                                  children: <Widget>[
+                                                    Icon(Icons.watch_later,
+                                                        size: 20),
+                                                    SizedBox(
+                                                      width: 2,
+                                                    ),
+                                                    Text("Time"),
+                                                  ],
+                                                ),
+                                                Text(formattedDate,
+                                                    style: new TextStyle(
+                                                        color: state
+                                                            .themeData
+                                                            .textTheme
+                                                            .body1
+                                                            .color,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        fontSize: 14.0))
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Expanded(
+                                child: Card(
+                                    elevation: 5,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              IconButton(
+                                                icon: Icon(Icons.camera_alt),
+                                                onPressed: () {
+                                                  _pickImage('Camera');
+                                                },
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.image),
+                                                onPressed: () {
+                                                  _pickImage('Gallery');
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                          Expanded(
+                                              child: Flex(
+                                            direction: Axis.horizontal,
+                                            children: <Widget>[
+                                              Expanded(child: showImage())
+                                            ],
+                                          ))
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Visibility(
@@ -388,9 +397,9 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                     ],
                   ),
                 ),
-              ),
-            ));
-      },
+              ));
+        },
+      ),
     );
   }
 
@@ -441,7 +450,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
             snapshot.data != null) {
           print("show");
           print(snapshot.data.path);
-          base64Image = base64Encode(snapshot.data.readAsBytesSync());
+
           return Container(
             decoration: BoxDecoration(boxShadow: [
               BoxShadow(
@@ -454,7 +463,7 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
               child: Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        fit: BoxFit.fill, image: FileImage(snapshot.data))),
+                        fit: BoxFit.cover, image: FileImage(snapshot.data))),
               ),
             ),
           );

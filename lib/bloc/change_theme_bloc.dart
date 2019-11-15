@@ -7,12 +7,12 @@ class ChangeThemeBloc extends Bloc<ChangeThemeEvent, ChangeThemeState> {
   double fontSize = 12.0;
 
   void onLightThemeChange(double fontSize) =>
-      {dispatch(LightTheme()), this.fontSize = fontSize};
+      {add(LightTheme()), this.fontSize = fontSize};
 
   void onDarkThemeChange(double fontSize) =>
-      {dispatch(DarkTheme()), this.fontSize = fontSize};
+      {add(DarkTheme()), this.fontSize = fontSize};
 
-  void onDecideThemeChange() => dispatch(DecideTheme());
+  void onDecideThemeChange() => add(DecideTheme());
 
   @override
   ChangeThemeState get initialState => ChangeThemeState.lightTheme(fontSize);

@@ -8,9 +8,8 @@ import 'package:http/http.dart' as http;
 import 'custom_app_exceptions.dart';
 
 class ApiBaseHelper {
-  final String _baseUrl = "http://www.mocky.io/v2/";
   final String _baseUrlProduction =
-      "https://murmuring-meadow-41519.herokuapp.com/api/";
+      "https://connected-brains.herokuapp.com/api/";
 
   Future<dynamic> get(String url) async {
     var responseJson;
@@ -26,8 +25,7 @@ class ApiBaseHelper {
   Future<dynamic> post(String url, {Map body}) async {
     var responseJson;
     try {
-      final response = await http.post(_baseUrlProduction + url,
-          body: body);
+      final response = await http.post(_baseUrlProduction + url, body: body);
       responseJson = _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');

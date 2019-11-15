@@ -429,7 +429,14 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
                                           ),
                                         ),
                                         Container(
-                                          color: Colors.redAccent,
+                                          decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    Color(0xff614385 ),
+                                                    Color(0xff516395),
+                                                  ])),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Row(

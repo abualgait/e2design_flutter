@@ -22,6 +22,7 @@ class PostDetailsObj {
   PostDetailsObj() {}
 
   String _id;
+  String uid;
   String post_txt;
   String post_img;
   String post_location;
@@ -33,10 +34,18 @@ class PostDetailsObj {
   // String post_stars;
   List<Comment> comments;
 
+  String tag_1;
+  String tag_2;
+  String tag_3;
+
   String get id => _id;
 
   PostDetailsObj.fromJson(Map<String, dynamic> json) {
-    _id = json['uid'];
+    tag_1 = json['tag_1'];
+    tag_2 = json['tag_2'];
+    tag_3 = json['tag_3'];
+    _id = json['id'];
+    uid = json['uid'];
     post_txt = json['question'];
     post_img = json['image'];
     post_location = json['location'];
@@ -56,6 +65,10 @@ class PostDetailsObj {
     if (id != null) {
       map['id'] = _id;
     }
+    map['tag_1'] = tag_1;
+    map['tag_2'] = tag_2;
+    map['tag_3'] = tag_3;
+
     map['question'] = post_txt;
     map['details'] = details;
     map['image'] = post_img;
@@ -72,6 +85,11 @@ class PostDetailsObj {
     this._id = map['id'];
     this.post_txt = map['question'];
     this.post_img = map['image'];
+
+    this.tag_1 = map['tag_1'];
+    this.tag_2 = map['tag_2'];
+    this.tag_3 = map['tag_3'];
+
     this.details = map['details'];
     this.post_location = map['location'];
     // this.post_comments = map['post_comments'];

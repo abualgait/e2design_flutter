@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:e2_design/models/onboarding_response.dart';
 import 'package:e2_design/models/post_response.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -55,4 +56,53 @@ showMessage(BuildContext context, String message) {
   Scaffold.of(context).showSnackBar(new SnackBar(
     content: new Text(message),
   ));
+}
+
+flushBarUtil(BuildContext context, String title, String message, IconData icon) {
+  Flushbar(
+    title: title,
+    message: message,
+    flushbarPosition: FlushbarPosition.TOP,
+    flushbarStyle: FlushbarStyle.FLOATING,
+    reverseAnimationCurve: Curves.decelerate,
+    forwardAnimationCurve: Curves.elasticOut,
+    boxShadows: [
+      BoxShadow(color: Colors.black, offset: Offset(0.0, 2.0), blurRadius: 3.0)
+    ],
+    backgroundGradient: LinearGradient(colors: [
+      Color(0xff614385),
+      Color(0xff516395),
+    ]),
+    isDismissible: true,
+    duration: Duration(seconds: 4),
+    icon: Icon(
+      icon,
+      color: Colors.greenAccent,
+    ),
+  )..show(context);
+}
+
+
+flushBarUtilWidget(BuildContext context, String title, Widget message, IconData icon) {
+  Flushbar(
+    title: title,
+    messageText: message,
+    flushbarPosition: FlushbarPosition.TOP,
+    flushbarStyle: FlushbarStyle.FLOATING,
+    reverseAnimationCurve: Curves.decelerate,
+    forwardAnimationCurve: Curves.elasticOut,
+    boxShadows: [
+      BoxShadow(color: Colors.black, offset: Offset(0.0, 2.0), blurRadius: 3.0)
+    ],
+    backgroundGradient: LinearGradient(colors: [
+      Color(0xff614385),
+      Color(0xff516395),
+    ]),
+    isDismissible: true,
+    duration: Duration(seconds: 4),
+    icon: Icon(
+      icon,
+      color: Colors.greenAccent,
+    ),
+  )..show(context);
 }

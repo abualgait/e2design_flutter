@@ -181,7 +181,7 @@ class PostCard extends StatelessWidget {
                           width: 3,
                         ),
                         Text(
-                          "30",
+                          post_stars == null ? "" : post_stars,
                           style: TextStyle(fontSize: 10, color: Colors.grey),
                         ),
                       ],

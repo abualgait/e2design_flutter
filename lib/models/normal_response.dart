@@ -3,12 +3,11 @@ class NormalResponse {
   bool status = true;
   String message;
 
-
   NormalResponse(this.next_offset, this.status, this.message);
 
   NormalResponse.fromJson(Map<String, dynamic> json) {
     next_offset = json['next_offset'];
-    status = json['status'];
+    status = json['status_bool'];
     message = json['message'];
   }
 

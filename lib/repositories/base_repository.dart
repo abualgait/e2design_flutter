@@ -9,7 +9,7 @@ import 'package:e2_design/models/request/comment_request.dart';
 import 'package:e2_design/models/request/question_request.dart';
 import 'package:e2_design/models/request/signup_request.dart';
 import 'package:e2_design/models/signup_response.dart';
-import 'package:e2_design/models/terms_response.dart';
+import 'package:e2_design/models/staticpage_response.dart';
 import 'package:e2_design/network_manager/api_base_helper.dart';
 
 class BaseRepository {
@@ -49,7 +49,7 @@ class BaseRepository {
   }
 
   Future<NormalResponse> verifyPhoneNumber(String verfication_code) async {
-    final response = await _helper.post("verify_phone/" + verfication_code);
+    final response = await _helper.get("verify_phone/" + verfication_code);
     return NormalResponse.fromJson(response);
   }
 
@@ -66,15 +66,25 @@ class BaseRepository {
     return CommentResponse.fromJson(response);
   }
 
-  Future<TermsResponse> fetchTerms() async {
-
+  Future<StaticResponse> fetchTerms() async {
     final response = await _helper.get("static_page/terms");
-    return TermsResponse.fromJson(response);
+    return StaticResponse.fromJson(response);
   }
 
   Future<OnBoardingResponse> fetchOnBoarding() async {
-
     final response = await _helper.get("screens");
     return OnBoardingResponse.fromJson(response);
+  }
+
+  //api V2.0
+
+  Future<StaticResponse> fetchPrivacy() async {
+    final response = await _helper.get("static_page/privacy");
+    return StaticResponse.fromJson(response);
+  }
+
+  Future<StaticResponse> fetchAboutUs() async {
+    final response = await _helper.get("static_page/about-us");
+    return StaticResponse.fromJson(response);
   }
 }

@@ -16,9 +16,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:sqflite/sqflite.dart';
 
-class MainBody extends StatefulWidget {
+import 'home.dart';
+
+class MainBody extends StatefulWidget implements IsReload {
+  bool isReload;
+
+  MainBody(this.isReload);
+
   @override
   _MainBodyState createState() => _MainBodyState();
+
+  @override
+  void reloadData() {
+    print("---------------state created---------------");
+  }
 }
 
 class _MainBodyState extends State<MainBody> {
@@ -58,6 +69,11 @@ class _MainBodyState extends State<MainBody> {
   @override
   void initState() {
     super.initState();
+    print("****************state created 2****************");
+    checkValidations();
+  }
+
+  void checkValidations() {
     _bloc = PostBloc();
     //startTimer();
     postList = List<Post>();
@@ -160,7 +176,7 @@ class _MainBodyState extends State<MainBody> {
                               print("after add all: " +
                                   postList.length.toString());
                               return PostList(page, maxPagesNumber,
-                                  postList: postList,
+                                  postList: postList.reversed.toList(),
                                   controller: _scrollController);
                               break;
                             case Status.ERROR:
@@ -275,7 +291,7 @@ class PostList extends StatelessWidget {
                     postList[index].post_time,
                     postList[index].post_img,
                     "",
-                    "")));
+                    postList[index].post_stars.toString())));
       },
     );
   }
