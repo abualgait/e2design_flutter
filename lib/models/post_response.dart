@@ -23,7 +23,7 @@ class PostResponse extends NormalResponse {
 }
 
 class Post {
-  //int _id;
+  String _id;
   String uid;
   var post_txt;
   String post_img;
@@ -35,12 +35,14 @@ class Post {
   int post_stars;
   String status;
   String archive;
+  bool is_liked = false;
 
-  //int get id => _id;
+   String get id => _id;
 
   Post.fromJson(Map<String, dynamic> json) {
-//    _id = json['id'];
+    _id = json['id'];
     uid = json['uid'];
+    is_liked = json['is_liked'];
     post_txt = json['question'];
     post_img = json['image'];
     post_location = json['location'];
@@ -54,9 +56,11 @@ class Post {
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-//    if (id != null) {
-//      map['id'] = _id;
-//    }
+    if (id != null) {
+      map['id'] = _id;
+    }
+
+    map['is_liked'] = is_liked;
     map['uid'] = uid;
     map['question'] = post_txt;
     map['image'] = post_img;
@@ -72,8 +76,9 @@ class Post {
 
   // Extract a Note object from a Map object
   Post.fromMapObject(Map<String, dynamic> map) {
-    //this._id = map['id'];
+   this._id = map['id'];
     this.uid = map['uid'];
+    this.is_liked = map['is_liked'];
     this.post_txt = map['question'];
     this.post_img = map['image'];
     this.post_location = map['location'];

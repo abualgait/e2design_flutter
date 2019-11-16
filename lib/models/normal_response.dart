@@ -7,9 +7,13 @@ class NormalResponse {
 
   NormalResponse.fromJson(Map<String, dynamic> json) {
     next_offset = json['next_offset'];
-    status = json['status_bool'];
+    status = json['status'];
     message = json['message'];
   }
+
+
+
+
 
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {

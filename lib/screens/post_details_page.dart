@@ -50,14 +50,13 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                   state.themeData.textTheme.headline,
                   state.themeData.primaryColor),
               backgroundColor: Colors.white10,
-              floatingActionButton:FloatingActionButton(
+              floatingActionButton: FloatingActionButton(
                 elevation: 5,
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            RespondToPostPage(widget.uid)),
+                        builder: (context) => RespondToPostPage(widget.uid)),
                   );
                 },
                 backgroundColor: state.themeData.textTheme.body1.color,
@@ -127,13 +126,16 @@ class PostDetailsWidget extends StatelessWidget {
           if (index == 0) {
             return PostCard(
                 null,
+                null,
+                null,
                 context,
                 postDetailsObj.post_txt,
                 postDetailsObj.post_location,
                 postDetailsObj.post_time,
                 postDetailsObj.post_img,
                 "",
-                "");
+                0,
+                false);
           } else {
             index = index - 1;
             return Padding(

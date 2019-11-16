@@ -179,16 +179,16 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {
           return Container(
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(.4),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 10.0))
-            ]),
+//            decoration: BoxDecoration(boxShadow: [
+//              BoxShadow(
+//                  color: Colors.black.withOpacity(.4),
+//                  blurRadius: 10.0,
+//                  offset: Offset(0.0, 10.0))
+//            ]),
             child: Container(
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      fit: BoxFit.cover, image: FileImage(snapshot.data))),
+                      fit: BoxFit.contain, image: FileImage(snapshot.data))),
             ),
           );
         } else if (snapshot.error != null) {
@@ -199,7 +199,7 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
         } else {
           return Image.asset(
             "assets/images/image_placeholder.png",
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
             height: 150,
           );
         }
@@ -260,6 +260,7 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
       },
       markers: {gramercyMarker},
     );
+    //mapController.getLatLng(screenCoordinate)
     return BlocBuilder(
         bloc: changeThemeBloc,
         builder: (BuildContext context, ChangeThemeState state) {
@@ -271,7 +272,7 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
                     child: Stack(
                       children: <Widget>[
                         Container(
-                          height: 300.0,
+                          height: 280.0,
                           child: CachedNetworkImage(
                             fit: BoxFit.cover,
                             imageUrl: widget.postDetailsObj.post_img == null
@@ -310,7 +311,7 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
                               ],
                             ),
                             SizedBox(
-                              height: 150,
+                              height: 140,
                             ),
                             Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -397,6 +398,7 @@ class _PostDetailsWidgetState extends State<PostDetailsWidget> {
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: new TextField(
+                                            maxLines: 3,
                                             controller: controler,
                                             style: TextStyle(
                                                 color: state.themeData.textTheme

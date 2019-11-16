@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:e2_design/models/contactus_response.dart';
+import 'package:e2_design/models/request/contact_us_request.dart';
 import 'package:e2_design/models/staticpage_response.dart';
-import 'package:e2_design/models/terms_response.dart';
 import 'package:e2_design/repositories/base_repository.dart';
 
 import '../api_response.dart';
 
-class TermsBloc {
+class StaticBloc {
   BaseRepository _baseRepository;
 
   StreamController _streamController;
@@ -17,8 +18,17 @@ class TermsBloc {
   Stream<ApiResponse<StaticResponse>> get termStream =>
       _streamController.stream;
 
-  TermsBloc() {
+  StreamController _contactUsStreamController;
+
+  StreamSink<ApiResponse<ContactResponse>> get contactusSink =>
+      _contactUsStreamController.sink;
+
+  Stream<ApiResponse<ContactResponse>> get contactusStream =>
+      _contactUsStreamController.stream;
+
+  StaticBloc() {
     _streamController = StreamController<ApiResponse<StaticResponse>>();
+    _contactUsStreamController = StreamController<ApiResponse<ContactResponse>>.broadcast();
     _baseRepository = BaseRepository();
   }
 
@@ -58,7 +68,20 @@ class TermsBloc {
     }
   }
 
+  postContactUs(ContactUsRequest contactUsRequest) async {
+    contactusSink.add(ApiResponse.loading('Fetching Data'));
+    try {
+      ContactResponse response = await _baseRepository.contactus(contactUsRequest);
+
+      contactusSink.add(ApiResponse.completed(response));
+    } catch (e) {
+      contactusSink.add(ApiResponse.error(e.toString()));
+      print(e);
+    }
+  }
+
   dispose() {
     _streamController?.close();
+    _contactUsStreamController?.close();
   }
 }

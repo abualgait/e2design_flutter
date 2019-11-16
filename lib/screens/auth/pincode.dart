@@ -38,7 +38,7 @@ class _PinCodePageState extends State<PinCodePage> {
 
   var appbartitle = "";
   TextEditingController controller = TextEditingController();
-  TextEditingController temp_controller = TextEditingController();
+
   String thisText = "";
   int pinLength = 4;
 
@@ -158,20 +158,7 @@ class _PinCodePageState extends State<PinCodePage> {
                                 ),
                               ),
                               Text(widget.response.userData.verification_code),
-                              TextField(
-                                controller: temp_controller,
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                ),
-                                decoration: new InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5.0)),
-                                  contentPadding: EdgeInsets.only(
-                                      left: 25, bottom: 25, top: 25, right: 25),
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  hintText: 'Enter Code(testing only)',
-                                ),
-                              ),
+
                               SizedBox(
                                 height: 20,
                               ),
@@ -180,10 +167,7 @@ class _PinCodePageState extends State<PinCodePage> {
                                   setState(() {
                                     showloader = true;
 
-                                    print("comming code");
-                                    print(widget
-                                        .response.userData.verification_code);
-                                    this.thisText = temp_controller.text;
+                                    this.thisText =  controller.text;
                                     if (thisText ==
                                         widget.response.userData
                                             .verification_code) {
@@ -191,9 +175,14 @@ class _PinCodePageState extends State<PinCodePage> {
                                         if (onValue) {
                                           checkValidation(context, thisText);
                                         } else {
-
                                           flushBarUtil(
-                                              context, "Oops!", "Internet Connection Lost", Icons.close);
+                                              context,
+                                              "Oops!",
+                                              "Internet Connection Lost",
+                                              Icon(
+                                                Icons.close,
+                                                color: Colors.red,
+                                              ));
                                         }
                                       });
                                     } else {
@@ -298,6 +287,7 @@ class _PinCodePageState extends State<PinCodePage> {
       SharedPreferencesHelper.setSession(Constants.USERTOKEN, token);
       String user =
           jsonEncode(UserData.fromJson(widget.response.userData.toJson()));
+      print("pincode userid: " + widget.response.userData.id);
       SharedPreferencesHelper.setSession(Constants.USERDATA, user);
 
       SharedPreferencesHelper.setUserLoggedIn();

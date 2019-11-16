@@ -33,6 +33,18 @@ class ApiBaseHelper {
     return responseJson;
   }
 
+
+  Future<dynamic> delete(String url) async {
+    var responseJson;
+    try {
+      final response = await http.delete(_baseUrlProduction + url);
+      responseJson = _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
+
   dynamic _returnResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:

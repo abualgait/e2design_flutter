@@ -22,12 +22,12 @@ class StaticPages extends StatefulWidget {
 
 class _StaticPagesState extends State<StaticPages> {
   double screenWidth, screenHeight;
-  TermsBloc _bloc;
+  StaticBloc _bloc;
 
   @override
   void initState() {
     super.initState();
-    _bloc = TermsBloc();
+    _bloc = StaticBloc();
     loadWhichPage(widget.type);
   }
 

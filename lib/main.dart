@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'base_classes/shaerd_prefs_helper.dart';
 import 'constvalue/const_value.dart';
 import 'language_manager/AppLocalizations.dart';
+import 'models/user_data_response.dart';
 
 void main() => runApp(MyApp());
 
@@ -149,6 +150,7 @@ class _RootPageState extends State<RootPage> {
   void initState() {
     super.initState();
     SharedPreferencesHelper.getUserLoggedIn().then((onValue) {
+
       setState(() {
         if (onValue) {
           authStatus = AuthStatus.LOGGED_IN;

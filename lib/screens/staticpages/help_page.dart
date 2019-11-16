@@ -3,6 +3,7 @@ import 'package:e2_design/bloc/change_theme_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../contact_us_page.dart';
 import '../static_page.dart';
 
 class HelpPage extends StatefulWidget {
@@ -59,7 +60,9 @@ class _HelpPageState extends State<HelpPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20,),
+                        SizedBox(
+                          height: 20,
+                        ),
                         InkWell(
                           onTap: () {
                             Navigator.push(
@@ -79,7 +82,9 @@ class _HelpPageState extends State<HelpPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20,),
+                        SizedBox(
+                          height: 20,
+                        ),
                         InkWell(
                           onTap: () {
                             Navigator.push(
@@ -95,6 +100,26 @@ class _HelpPageState extends State<HelpPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(24.0),
                                 child: Text("Privacy policy"),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ContactUsPage()));
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Text("Contact Us"),
                               ),
                             ),
                           ),

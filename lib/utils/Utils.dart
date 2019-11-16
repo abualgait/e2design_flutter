@@ -58,7 +58,7 @@ showMessage(BuildContext context, String message) {
   ));
 }
 
-flushBarUtil(BuildContext context, String title, String message, IconData icon) {
+flushBarUtil(BuildContext context, String title, String message, Icon icon) {
   Flushbar(
     title: title,
     message: message,
@@ -75,10 +75,7 @@ flushBarUtil(BuildContext context, String title, String message, IconData icon) 
     ]),
     isDismissible: true,
     duration: Duration(seconds: 4),
-    icon: Icon(
-      icon,
-      color: Colors.greenAccent,
-    ),
+    icon: icon,
   )..show(context);
 }
 

@@ -1,12 +1,18 @@
 import 'package:e2_design/models/activites_response.dart';
 import 'package:e2_design/models/comment_response.dart';
+import 'package:e2_design/models/contactus_response.dart';
+import 'package:e2_design/models/like_response.dart';
 import 'package:e2_design/models/normal_response.dart';
 import 'package:e2_design/models/notifications_response.dart';
 import 'package:e2_design/models/onboarding_response.dart';
 import 'package:e2_design/models/post_details_response.dart';
 import 'package:e2_design/models/post_response.dart';
+import 'package:e2_design/models/report_response.dart';
 import 'package:e2_design/models/request/comment_request.dart';
+import 'package:e2_design/models/request/contact_us_request.dart';
+import 'package:e2_design/models/request/like_request.dart';
 import 'package:e2_design/models/request/question_request.dart';
+import 'package:e2_design/models/request/report_request.dart';
 import 'package:e2_design/models/request/signup_request.dart';
 import 'package:e2_design/models/signup_response.dart';
 import 'package:e2_design/models/staticpage_response.dart';
@@ -87,4 +93,27 @@ class BaseRepository {
     final response = await _helper.get("static_page/about-us");
     return StaticResponse.fromJson(response);
   }
+
+  Future<LikeResponse> likeQuestion(LikeRequest likeRequest) async {
+    final response = await _helper.post("like", body: likeRequest.toMap());
+    return LikeResponse.fromJson(response);
+  }
+
+  Future<LikeResponse> unlikeQuestion(String id) async {
+    final response = await _helper.delete("like_delete/" + id);
+    return LikeResponse.fromJson(response);
+  }
+
+  Future<ReportResponse> report(ReportRequest reportRequest) async {
+    final response =
+    await _helper.post("report", body: reportRequest.toMap());
+    return ReportResponse.fromJson(response);
+  }
+
+  Future<ContactResponse> contactus(ContactUsRequest contactUsRequest) async {
+    final response =
+    await _helper.post("contact_us/", body: contactUsRequest.toMap());
+    return ContactResponse.fromJson(response);
+  }
+
 }

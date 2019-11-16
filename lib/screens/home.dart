@@ -118,10 +118,7 @@ class _HomePageState extends State<HomePage>
                   body: Center(
                       child: IndexedStack(
                     index: _showMenuIndex,
-                    children: <Widget>[
-                      MasterPage(state),
-                      SingleChildScrollView(child: PageMenu(state))
-                    ],
+                    children: <Widget>[MasterPage(state), PageMenu(state)],
                   ))));
         });
   }
@@ -261,14 +258,11 @@ class _HomePageState extends State<HomePage>
                                     ),
                                     Icons.check);
 
-                                firstTime = false;
+                                firstTime = true;
                                 isReload = true;
-
                                 setIndexPage(SCREENS.MAINBODY);
                                 appbartitle = "TimeLine";
                                 _onClossedMenu();
-//                                var mainbody = new MainBody(true);
-//                                mainbody.reloadData();
                               })
                             })),
                   );
@@ -324,43 +318,47 @@ class _HomePageState extends State<HomePage>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Align(
-                alignment: Alignment.bottomRight,
-                child: new IconButton(
-                  onPressed: _onClossedMenu,
-                  icon: Icon(Icons.close),
-                ),
+              SizedBox(
+                height: 10,
               ),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new Container(
-                      width: 50.0,
-                      height: 50.0,
-                      decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              fit: BoxFit.fill,
-                              image: new NetworkImage(
-                                  "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")))),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: <Widget>[
-                      Text(
-                        "Muhammad",
-                        style: TextStyle(fontSize: 14),
-                      ),
+                      new Container(
+                          width: 50.0,
+                          height: 50.0,
+                          decoration: new BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: new DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: new NetworkImage(
+                                      "https://avatars0.githubusercontent.com/u/38107393?s=460&v=4")))),
                       SizedBox(
-                        height: 5,
+                        width: 10,
                       ),
-                      Text(
-                        "Cairo, Egypt",
-                        style: TextStyle(color: Colors.grey, fontSize: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Muhammad",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Cairo, Egypt",
+                            style: TextStyle(color: Colors.grey, fontSize: 10),
+                          ),
+                        ],
                       ),
                     ],
+                  ),
+                  new IconButton(
+                    onPressed: _onClossedMenu,
+                    icon: Icon(Icons.close),
                   ),
                 ],
               ),

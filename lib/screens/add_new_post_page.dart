@@ -6,6 +6,7 @@ import 'package:e2_design/bloc/change_theme_bloc.dart';
 import 'package:e2_design/bloc/change_theme_state.dart';
 import 'package:e2_design/language_manager/AppLocalizations.dart';
 import 'package:e2_design/models/request/question_request.dart';
+import 'package:e2_design/network_manager/network_blocs/post_bloc.dart';
 import 'package:e2_design/utils/Utils.dart';
 import 'package:e2_design/widgets/common_widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -65,7 +66,10 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
           //show toas offline mode
           // showMessage(globalContext, "Internet Connection lost");
           flushBarUtil(
-              globalContext, "Oops!", "Internet Connection lost", Icons.close);
+              globalContext, "Oops!", "Internet Connection lost", Icon(
+            Icons.close,
+            color: Colors.red,
+          ));
         }
       });
     });
@@ -136,10 +140,14 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
     // Check if any error occured
     if (response == null || response.containsKey("error")) {
       flushBarUtil(
-          globalContext, "Oops!", "Question Upload Failed", Icons.close);
+          globalContext, "Oops!", "Question Upload Failed", Icon(
+        Icons.close,
+        color: Colors.red,
+      ));
     } else {
       Navigator.pop(globalContext);
       widget.onQuestionCreated();
+
     }
     setState(() {
       showloader = false;
@@ -233,10 +241,10 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
                               SizedBox(
                                 height: 10,
                               ),
-                              Chip(
-                                label: new Text(controller.text),
-                                onDeleted: () {},
-                              ),
+//                              Chip(
+//                                label: new Text(controller.text),
+//                                onDeleted: () {},
+//                              ),
                               Visibility(
                                 visible: false,
                                 child: Card(
@@ -448,22 +456,21 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {
-          print("show");
-          print(snapshot.data.path);
+
 
           return Container(
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(.4),
-                  blurRadius: 10.0,
-                  offset: Offset(0.0, 10.0))
-            ]),
+//            decoration: BoxDecoration(boxShadow: [
+//              BoxShadow(
+//                  color: Colors.black.withOpacity(.4),
+//                  blurRadius: 10.0,
+//                  offset: Offset(0.0, 10.0))
+//            ]),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
               child: Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        fit: BoxFit.cover, image: FileImage(snapshot.data))),
+                        fit: BoxFit.contain, image: FileImage(snapshot.data))),
               ),
             ),
           );
@@ -474,17 +481,17 @@ class _AddNewPostPageState extends State<AddNewPostPage> {
           );
         } else {
           return Container(
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(.4),
-                    blurRadius: 10.0,
-                    offset: Offset(0.0, 10.0))
-              ]),
+//              decoration: BoxDecoration(boxShadow: [
+//                BoxShadow(
+//                    color: Colors.black.withOpacity(.4),
+//                    blurRadius: 10.0,
+//                    offset: Offset(0.0, 10.0))
+//              ]),
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 child: Image.asset(
                   "assets/images/image_placeholder.png",
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ));
         }

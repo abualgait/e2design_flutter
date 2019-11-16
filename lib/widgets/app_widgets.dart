@@ -49,13 +49,35 @@ Widget TrendCard(BuildContext context, var post_txt, var post_location,
   );
 }
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
   Function onTap;
-  var post_txt, post_location, post_time, post_img, post_comments, post_stars;
-  BuildContext context;
+  Function onTapLikeDislik;
+  Function onTapShare;
+  var post_txt, post_location, post_time, post_img, post_comments;
 
-  PostCard(this.onTap(), this.context, this.post_txt, this.post_location,
-      this.post_time, this.post_img, this.post_comments, this.post_stars);
+  int post_stars;
+  BuildContext context;
+  bool is_liked;
+
+  PostCard(
+      this.onTap(),
+      this.onTapLikeDislik(),
+      this.onTapShare(),
+      this.context,
+      this.post_txt,
+      this.post_location,
+      this.post_time,
+      this.post_img,
+      this.post_comments,
+      this.post_stars,
+      this.is_liked);
+
+  @override
+  _PostCardState createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +111,7 @@ class PostCard extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Text(
-                            post_time == null ? "" : post_time,
+                            widget.post_time == null ? "" : widget.post_time,
                             style: TextStyle(fontSize: 10, color: Colors.grey),
                           ),
                         ),
@@ -98,7 +120,9 @@ class PostCard extends StatelessWidget {
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width - 200,
                             child: Text(
-                              post_location == null ? "" : post_location,
+                              widget.post_location == null
+                                  ? ""
+                                  : widget.post_location,
                               style:
                                   TextStyle(fontSize: 10, color: Colors.grey),
                             ),
@@ -112,7 +136,7 @@ class PostCard extends StatelessWidget {
                   visible: true,
                   child: IconButton(
                       onPressed: () {
-                        onTap();
+                        widget.onTap();
                       },
                       icon: Icon(
                         Icons.more_horiz,
@@ -136,7 +160,7 @@ class PostCard extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 child: CachedNetworkImage(
                   fit: BoxFit.fill,
-                  imageUrl: post_img == null ? "" : post_img,
+                  imageUrl: widget.post_img == null ? "" : widget.post_img,
                   placeholder: (context, url) => Image.asset(
                     "assets/images/image_placeholder.png",
                     fit: BoxFit.fill,
@@ -176,12 +200,27 @@ class PostCard extends StatelessWidget {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Icon(Icons.favorite, color: Colors.red, size: 20),
+                        IconButton(
+                          onPressed: () {
+                            widget.is_liked = !widget.is_liked;
+                            widget.onTapLikeDislik();
+                            setState(() {
+                              widget.post_stars = widget.is_liked
+                                  ? widget.post_stars + 1
+                                  : widget.post_stars - 1;
+                            });
+                          },
+                          icon: Icon(Icons.favorite,
+                              color:
+                                  widget.is_liked ? Colors.red : Colors.white,
+                              size: 20),
+                          color: Colors.grey,
+                        ),
                         SizedBox(
                           width: 3,
                         ),
                         Text(
-                          post_stars == null ? "" : post_stars,
+                          widget.post_stars.toString(),
                           style: TextStyle(fontSize: 10, color: Colors.grey),
                         ),
                       ],
@@ -189,7 +228,14 @@ class PostCard extends StatelessWidget {
                     SizedBox(
                       width: 9,
                     ),
-                    Icon(Icons.share, color: Colors.grey, size: 20),
+                    IconButton(
+                        onPressed: () {
+                          widget.onTapShare();
+                        },
+                        icon: Icon(
+                          Icons.share,
+                          color: Colors.grey,
+                        )),
                   ],
                 ),
               ],
@@ -199,7 +245,7 @@ class PostCard extends StatelessWidget {
             ),
             //MyPeople(),
             Text(
-              post_txt == null ? "" : post_txt,
+              widget.post_txt == null ? "" : widget.post_txt,
             ),
           ],
         ));

@@ -182,7 +182,10 @@ class _LoginPageState extends State<LoginPage> {
                                                                   false;
                                                             });
                                                             flushBarUtil(
-                                                                context, "Oops!", "Internet Connections Lost", Icons.not_interested);
+                                                                context, "Oops!", "Internet Connections Lost", Icon(
+                                                              Icons.not_interested,
+                                                              color: Colors.red,
+                                                            ));
 
                                                           }
                                                         }
@@ -277,7 +280,10 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       flushBarUtil(
-          context, "Oops!", "Enter valid email of number", Icons.close);
+          context, "Oops!", "Enter valid email of number", Icon(
+        Icons.close,
+        color: Colors.red,
+      ));
     }
   }
 
@@ -304,9 +310,9 @@ class _LoginPageState extends State<LoginPage> {
     SignUpRequest signUpRequest = new SignUpRequest(
         email: "",
         phone: thisText,
-        first_name: "Mohamed",
+        first_name: "Mohamed phone",
         last_name: "abualgait",
-        password: "");
+        password: "123456789");
     _baseRepository.signupWithMobile(signUpRequest).then((onValue) {
       checkPhoneResponse(onValue);
     });
